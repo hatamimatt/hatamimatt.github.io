@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>About · Matt Hatami</title>
+<meta name="description" content="Matt Hatami, PhD student in hydrology at the University of Florida: background, research interests, education, experience and awards.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFFFFF; --ink:#1C2328; --muted:#56636C; --line:#DCE2E6; --accent:#1B6A88; --bar:#0A1620;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){ --paper:#0E1A23; --ink:#E1E8EC; --muted:#9AABB5; --line:#263A4A; --accent:#5FB6D4; --bar:#050E16; color-scheme:dark; }
+}
+:root[data-theme="dark"]{ --paper:#0E1A23; --ink:#E1E8EC; --muted:#9AABB5; --line:#263A4A; --accent:#5FB6D4; --bar:#050E16; color-scheme:dark; }
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.bar{background:var(--bar);color:#fff}
+.bar-in{max-width:1180px;margin:0 auto;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.bar .brand{font:700 1.45rem/1 var(--serif);color:#fff;text-decoration:none;letter-spacing:.005em}
+.bar ul{list-style:none;display:flex;gap:24px;margin:0;padding:0;font-size:.95rem}
+.bar ul a{color:#C9D6DE;text-decoration:none}
+.bar ul a:hover,.bar ul a[aria-current]{color:#fff}
+.bar ul a[aria-current]{font-weight:600}
+.page{max-width:1180px;margin:0 auto;padding:44px 28px 0;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:56px;align-items:start}
+h2{font:700 1.65rem/1.2 var(--serif);margin:46px 0 16px}
+h2:first-child{margin-top:20px}
+.lead p{margin:0 0 18px}
+.motto{font-weight:600;color:var(--muted);margin-top:6px}
+.interests{margin:0}
+.timeline{display:grid;grid-template-columns:8.5rem minmax(0,1fr);gap:12px 18px;margin:0}
+.timeline dt{color:var(--muted);font-variant-numeric:tabular-nums}
+.timeline dd{margin:0}
+.timeline dd span{display:block;font-size:.92rem;color:var(--muted)}
+.awards{margin:0;padding-left:1.1em}
+.awards li{margin:0 0 6px}
+.card{position:sticky;top:24px;text-align:center}
+.card img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:4px}
+.card h1{font:600 1.7rem/1.2 var(--serif);margin:22px 0 10px}
+.card .role{margin:0 0 14px;font-size:1.05rem}
+.card .org{margin:0;line-height:1.45}
+.card .org a{text-decoration:none}
+.card .org a:hover{text-decoration:underline}
+.card .dept{color:var(--muted);margin:6px 0}
+.icons{display:flex;justify-content:center;gap:12px;margin:22px 0 0;padding:0;list-style:none}
+.icons a{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;color:#fff;text-decoration:none}
+.icons svg{width:22px;height:22px;fill:currentColor}
+.icons .li{background:#0a66c2}.icons .gs{background:#4285f4}.icons .gh{background:#24292f}.icons .em{background:#56636c}.icons .cv{background:#1b6a88;font:700 .8rem var(--sans)}
+footer{max-width:1180px;margin:72px auto 0;padding:22px 28px 44px;border-top:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+@media (max-width:900px){
+  .page{grid-template-columns:minmax(0,1fr);gap:24px}
+  .card{position:static;order:-1;max-width:420px;margin:0 auto}
+  .bar ul{display:none}
+}
+@media (max-width:760px){
+  .bar-in,.page{padding-left:16px;padding-right:16px}
+  .timeline{grid-template-columns:minmax(0,1fr);gap:2px}
+  .timeline dd{margin-bottom:12px}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="index.html">Matt Hatami</a>
+    <nav aria-label="Site"><ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#research">Research</a></li>
+      <li><a href="articles.html">Writing</a></li>
+      <li><a href="index.html#publications">Publications</a></li>
+      <li><a href="about.html" aria-current="page">About</a></li>
+      <li><a href="assets/CV_HatamiMatt.pdf" target="_blank" rel="noopener">CV</a></li>
+    </ul></nav>
+  </div>
+</header>
+
+<div class="page">
+  <main class="lead">
+    <h2>A bit about me</h2>
+    <p>I am a PhD student in hydrology at the University of Florida, in the Climate Resilience Lab of <a href="https://nassernajibi.github.io/lab/" target="_blank" rel="noopener">Dr. Nasser Najibi’s research group</a>. My research focuses on hydroclimate extremes and risk: characterizing and modeling floods, droughts, extreme precipitation and heatwaves, and developing stochastic decision frameworks that help infrastructure and ecosystems stay resilient under deep uncertainty.</p>
+    <p>I combine process-based and ensemble approaches, statistics, machine learning, remote sensing and geospatial tools to assess climate vulnerability across water, energy, transportation, agriculture and public health. Along the way I build the software that makes this analysis usable: web GIS applications, data pipelines and interactive tools like the globe on this site.</p>
+    <p>My path to this work started with river hydrology and hydraulics during my BSc in Iran, continued through disaster risk mitigation in Milan and cascading-disaster modeling in Groningen, and led to a PhD in water resources at the University of South Carolina before I moved to UF.</p>
+
+    <h2>Research interests</h2>
+    <p class="interests">Hydroclimate extremes, extreme precipitation, multi-hazard risk assessment, compound and cascading disasters, statistical analysis, water systems modeling, climate change adaptation, geospatial machine learning.</p>
+
+    <h2>Education</h2>
+    <dl class="timeline">
+      <dt>2025–present</dt><dd>PhD in Hydrology, <a href="https://www.ufl.edu/" target="_blank" rel="noopener">University of Florida</a><span>Department of Agricultural and Biological Engineering, Climate Resilience Lab</span></dd>
+      <dt>2024–2025</dt><dd>PhD in Water Resources Engineering, <a href="https://www.sc.edu/" target="_blank" rel="noopener">University of South Carolina</a><span>iWERS lab, with Dr. Erfan Goharian; moved to UF</span></dd>
+      <dt>2023</dt><dd>MSc thesis work, <a href="https://www.rug.nl/" target="_blank" rel="noopener">University of Groningen</a>, Netherlands<span>Agent-based model of human behavior during cascading disasters</span></dd>
+      <dt>2021–2023</dt><dd>MSc in Civil Engineering for Risk Mitigation, <a href="https://www.polimi.it/en/" target="_blank" rel="noopener">Politecnico di Milano</a>, Italy<span>Thesis: applications of deep learning and remote sensing in the disaster management cycle</span></dd>
+      <dt>2015–2021</dt><dd>BSc in Civil Engineering, <a href="https://www.ikiu.ac.ir/" target="_blank" rel="noopener">Imam Khomeini International University</a>, Iran</dd>
+    </dl>
+
+    <h2>Experience</h2>
+    <dl class="timeline">
+      <dt>2025–present</dt><dd>Geospatial Application Development Intern, South Carolina Department of Transportation<span>Web GIS applications in ArcGIS Experience Builder, custom React widgets, real-time data APIs</span></dd>
+      <dt>2023–present</dt><dd>Geospatial Administrative Associate, Gamecock Geospatial Community, University of South Carolina<span>GIS meetings, workshops and outreach</span></dd>
+      <dt>2023–2024</dt><dd>Geospatial Data Scientist Intern, GEOAPP, Florence, Italy<span>A QGIS plugin and pipeline that cut the analysis of unstable ground in open-pit mines from 8 hours to 20 minutes per site</span></dd>
+    </dl>
+
+    <h2>Honors and awards</h2>
+    <ul class="awards">
+      <li><b>2025</b> · Travel grant to attend the Tethys Summit 2025</li>
+      <li><b>2024</b> · Scholarship award, 9th annual meeting of the Southeast and Caribbean Disaster Resilience Partnership</li>
+      <li><b>2024</b> · Winner of the data challenge ($3,500), Southeast Coastal Ocean Observing Regional Association</li>
+      <li><b>2024</b> · 3rd place ($2,500), IBM Call for Code competition among South Carolina universities</li>
+      <li><b>2023</b> · Erasmus scholarship to study in Portugal</li>
+      <li><b>2022</b> · Erasmus scholarship to study in Poland</li>
+      <li><b>2021</b> · Italian government scholarship for international students</li>
+      <li><b>2016</b> · Top 0.01% of 200,000 participants in Iran’s national university entrance exam</li>
+    </ul>
+  </main>
+
+  <aside class="card">
+    <img src="assets/images/portrait.jpg" alt="Matt Hatami presenting his MSc thesis at Politecnico di Milano">
+    <h1>Hi! I am Matt.</h1>
+    <p class="role">PhD student · Extreme rainfall and climate risk</p>
+    <p class="org"><a href="https://nassernajibi.github.io/lab/" target="_blank" rel="noopener">Climate Resilience Lab</a></p>
+    <p class="dept">Department of Agricultural and Biological Engineering</p>
+    <p class="org"><a href="https://www.ufl.edu/" target="_blank" rel="noopener">University of Florida</a></p>
+    <ul class="icons">
+      <li><a class="li" href="https://www.linkedin.com/in/hatamimatt/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.6 8.65 21 11.2 21 14.5V21h-4v-5.8c0-1.38-.03-3.16-1.93-3.16-1.93 0-2.22 1.5-2.22 3.06V21H9z"/></svg></a></li>
+      <li><a class="gs" href="https://scholar.google.com/citations?user=N0m5rRUAAAAJ&amp;hl=en" target="_blank" rel="noopener" aria-label="Google Scholar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 1 9.5l4 2.36V17c0 2.2 3.13 4 7 4s7-1.8 7-4v-5.14L23 9.5zm0 15.5c-2.9 0-5-1.27-5-2.5v-3l5 2.95L17 13v3c0 1.23-2.1 2.5-5 2.5z"/></svg></a></li>
+      <li><a class="gh" href="https://github.com/HatamiMatt" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.86v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg></a></li>
+      <li><a class="em" href="mailto:HatamiMatt@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm9 7.2L4.2 7H4v.5l8 5.3 8-5.3V7h-.2z"/></svg></a></li>
+      <li><a class="cv" href="assets/CV_HatamiMatt.pdf" target="_blank" rel="noopener" aria-label="CV (PDF)">CV</a></li>
+    </ul>
+  </aside>
+</div>
+
+<footer>© 2026 Matt Hatami</footer>
+</body>
+</html>

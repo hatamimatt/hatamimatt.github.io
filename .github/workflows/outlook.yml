@@ -1,5 +1,5 @@
 # Refreshes the globe's past five days from the newest GFS analysis and publishes the site to
-# GitHub Pages. GFS 1 degree files for a cycle are complete about 4 hours after it (00, 06, 12, 18 UTC).
+# GitHub Pages. GFS files for a cycle are complete about 4 hours after it (00, 06, 12, 18 UTC).
 name: Update globe data
 
 on:

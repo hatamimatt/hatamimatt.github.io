@@ -58,5 +58,37 @@
    "vmin": 0.0,
    "vmax": 105.366
   }
+ },
+ "detail": {
+  "grid": {
+   "nlat": 97,
+   "nlon": 113,
+   "lat0": 40.0,
+   "lon0": -98.0,
+   "d": 0.25
+  },
+  "layers": {
+   "ivtu": {
+    "file": "detail/ivtu.bin",
+    "vmin": -2326.351,
+    "vmax": 2326.351
+   },
+   "ivtv": {
+    "file": "detail/ivtv.bin",
+    "vmin": -3110.872,
+    "vmax": 3110.872
+   },
+   "pw": {
+    "file": "detail/pw.bin",
+    "vmin": 0.077,
+    "vmax": 82.687
+   },
+   "rain6": {
+    "file": "detail/rain6.bin",
+    "vmin": 0.0,
+    "vmax": 105.366
+   }
+  },
+  "source": "ERA5 at 0.25 degree, from data/helene (prepare_event.py)"
  }
 }

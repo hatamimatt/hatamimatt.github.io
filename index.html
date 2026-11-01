@@ -40,7 +40,7 @@ button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--hero-accent);outline-offset:2px}
 
 /* ---------- hero ---------- */
-.hero{position:relative;min-height:max(700px,100svh);background:radial-gradient(ellipse 70% 80% at 68% 48%,#0f2738 0%,#081621 55%,var(--space) 100%);color:var(--hero-ink);overflow:hidden;isolation:isolate}
+.hero{position:relative;min-height:100svh;background:radial-gradient(ellipse 70% 80% at 68% 48%,#0f2738 0%,#081621 55%,var(--space) 100%);color:var(--hero-ink);overflow:hidden;isolation:isolate}
 .hero > canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #globe{cursor:grab;touch-action:pan-y;z-index:0}
 #globe.dragging{cursor:grabbing}
@@ -52,24 +52,40 @@ button{font:inherit;color:inherit}
 .nav ul{list-style:none;display:flex;gap:22px;margin:0;padding:0;font-size:.9rem}
 .nav ul a{text-decoration:none;color:var(--hero-muted)}
 .nav ul a:hover{color:var(--hero-ink)}
-.hero-inner{position:relative;z-index:3;width:410px;max-width:100%;padding:96px 0 28px 28px;display:flex;flex-direction:column;gap:26px;pointer-events:none}
+.hero-inner{position:relative;z-index:3;width:410px;max-width:100%;padding:80px 0 22px 28px;display:flex;flex-direction:column;gap:20px;pointer-events:none}
+@media (min-width:761px){
+  .hero{height:100svh;min-height:600px}
+  .hero-inner{height:100%;justify-content:space-between}
+}
 .hero-inner > *{pointer-events:auto}
 .eyebrow{font:500 .78rem/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--hero-accent);margin:0 0 12px}
-.hero h1{font:600 clamp(2.1rem,4.2vw,3.1rem)/1.05 var(--serif);letter-spacing:-.015em;margin:0 0 14px}
+.hero h1{font:600 clamp(2rem,3.6vw,2.8rem)/1.05 var(--serif);letter-spacing:-.015em;margin:0 0 12px}
 .lede{margin:0;color:#C3D2DA;font-size:1rem;max-width:30rem}
-.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;border:1px solid var(--glass-line);background:rgba(255,255,255,.04);text-decoration:none;font-size:.9rem;cursor:pointer}
 .btn:hover{border-color:var(--hero-accent)}
 .btn.primary{background:var(--hero-accent);border-color:var(--hero-accent);color:#04131c;font-weight:600}
 .btn.primary:hover{background:#8ad3eb}
 .spacer{display:none}
 
-.panel{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-line);border-radius:12px;padding:14px 16px 16px;display:flex;flex-direction:column;gap:14px}
+.panel{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-line);border-radius:12px;padding:12px 14px 14px;display:flex;flex-direction:column;gap:11px}
 .panel h2{font:600 .78rem/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--hero-muted);margin:0}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:rgba(255,255,255,.05);border-radius:8px;padding:3px}
 .seg button{border:0;background:transparent;padding:7px 4px;border-radius:6px;font-size:.84rem;cursor:pointer;color:var(--hero-muted)}
-.seg.two,.seg.four{grid-template-columns:repeat(2,1fr)}
-.dsinfo{margin:-6px 0 0;font-size:.76rem;color:var(--hero-muted);line-height:1.35}
+.seg.two{grid-template-columns:repeat(2,1fr)}
+.seg.four{grid-template-columns:repeat(4,1fr)}
+.dsinfo{margin:-3px 0 0;font-size:.74rem;color:var(--hero-muted);line-height:1.35}
+.dsinfo[hidden],.evlist[hidden]{display:none}
+.evlist{display:flex;flex-direction:column;gap:4px;margin:-3px 0 0}
+.evlist button{display:flex;justify-content:space-between;align-items:baseline;gap:10px;text-align:left;border:1px solid var(--glass-line);background:rgba(255,255,255,.03);border-radius:8px;padding:7px 10px;cursor:pointer;color:var(--hero-muted);font-size:.84rem}
+.evlist button b{color:var(--hero-ink);font-weight:600}
+.evlist button span{font-size:.74rem;white-space:nowrap}
+.evlist button[aria-pressed="true"]{border-color:rgba(108,195,224,.55);background:rgba(108,195,224,.12)}
+.evlist .soon{font-size:.72rem;color:var(--hero-muted);margin:2px 0 0;opacity:.8}
+.row.between{justify-content:space-between;flex-wrap:nowrap}
+.row.between .switch{font-size:.8rem;white-space:nowrap}
+.row.between .navbtns{flex-wrap:nowrap;gap:5px}
+.row.between .navbtns .btn{padding:6px 10px}
 .seg button[aria-pressed="true"]{background:rgba(108,195,224,.18);color:var(--hero-ink);box-shadow:inset 0 0 0 1px rgba(108,195,224,.45)}
 .row{display:flex;align-items:center;gap:10px}
 .play{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--glass-line);background:rgba(255,255,255,.05);cursor:pointer;display:grid;place-items:center;font-size:12px}
@@ -121,7 +137,10 @@ section.block{padding:80px 28px 8px}
 .li-profile{background:#fff;border-radius:10px;box-shadow:0 0 0 1px rgba(0,0,0,.08);overflow:hidden;text-align:center;padding:0 16px 18px;position:sticky;top:20px}
 .li-cover{height:62px;margin:0 -16px;background:linear-gradient(120deg,#0b3954,#1b6a88 55%,#6cc3e0)}
 .li-avatar{width:76px;height:76px;border-radius:50%;object-fit:cover;object-position:70% 42%;border:3px solid #fff;margin-top:-38px;background:#dde}
-.li-profile h2{font:600 1.1rem/1.3 inherit;margin:8px 0 4px;font-family:inherit}
+.li-profile h3{font:600 1.1rem/1.3 inherit;margin:8px 0 4px;font-family:inherit}
+.li-head{max-width:844px;margin:0 auto 22px}
+.li-head h2{font:600 clamp(1.8rem,3vw,2.4rem)/1.15 var(--serif);margin:0 0 6px;color:#1d2226}
+.li-head p{margin:0;color:rgba(0,0,0,.6)}
 .li-headline{font-size:.82rem;line-height:1.4;color:rgba(0,0,0,.6);margin:0 0 6px}
 .li-loc{font-size:.75rem;color:rgba(0,0,0,.6);margin:0 0 14px}
 .li-follow{display:block;padding:7px 12px;border-radius:999px;background:#0a66c2;color:#fff;font-weight:600;font-size:.88rem;text-decoration:none}
@@ -170,6 +189,16 @@ footer{margin:80px auto 0;padding:22px 28px 44px;border-top:1px solid var(--line
   .cards,.about{grid-template-columns:minmax(0,1fr)}
   .li-wrap{grid-template-columns:minmax(0,1fr);max-width:560px}
   .li-profile{position:static}
+}
+@media (min-width:761px) and (max-height:860px){
+  .hero h1{font-size:2.15rem}
+  #ledeData{display:none}
+  .eyebrow{margin-bottom:8px}
+}
+@media (min-width:761px) and (max-height:720px){
+  .dsinfo,.legend p{display:none}
+  .hero-inner{padding-top:70px;gap:12px}
+  .panel{gap:9px}
 }
 @media (max-width:760px){
   .nav{padding:14px 16px}
@@ -222,7 +251,7 @@ if (location.protocol === "file:") addEventListener("DOMContentLoaded", () => {
       <p class="lede">I study hydroclimate extremes (floods, droughts, extreme precipitation and heatwaves) and how to keep infrastructure resilient to them, in the Climate Resilience Lab at the University of Florida. <span id="ledeData">The globe shows the last five days of the atmosphere behind extreme rain.</span></p>
       <div class="cta">
         <button class="btn primary" id="ctaFly" type="button">Fly to the Southeast</button>
-        <a class="btn" href="#research">Read about my research</a>
+        <a class="btn" href="about.html">More about me</a>
       </div>
     </div>
 
@@ -230,6 +259,7 @@ if (location.protocol === "file:") addEventListener("DOMContentLoaded", () => {
 
     <div class="panel" role="group" aria-label="Globe controls">
       <div class="seg two" id="datasets" role="group" aria-label="Data shown"></div>
+      <div class="evlist" id="evList" role="group" aria-label="Past events" hidden></div>
       <p class="dsinfo" id="dsInfo"></p>
       <div class="seg" id="layers" role="group" aria-label="Map layer"></div>
       <div class="row">
@@ -242,12 +272,13 @@ if (location.protocol === "file:") addEventListener("DOMContentLoaded", () => {
         <canvas id="cbar" width="256" height="1"></canvas>
         <div class="ticks" id="lgTicks"></div>
       </div>
+      <div class="row between">
       <label class="switch"><input type="checkbox" id="flow" checked> <span id="flowLabel">Moving lines</span></label>
       <div class="navbtns">
-        <button class="btn" id="goSE" type="button">Southeast US</button>
-        <button class="btn" id="goGlobe" type="button">Whole globe</button>
+        <button class="btn" id="goGlobe" type="button" title="Back to the whole globe">Globe</button>
         <button class="btn zoom" id="zoomIn" type="button" aria-label="Zoom in">+</button>
         <button class="btn zoom" id="zoomOut" type="button" aria-label="Zoom out">−</button>
+      </div>
       </div>
     </div>
   </div>
@@ -298,15 +329,18 @@ if (location.protocol === "file:") addEventListener("DOMContentLoaded", () => {
   </section>
 
   <section class="li-section" id="linkedin" aria-labelledby="liTitle">
+    <div class="wrap li-head">
+      <h2 id="liTitle">LinkedIn Updates</h2>
+      <p>My latest posts on LinkedIn, newest first. Scroll the feed for older ones.</p>
+    </div>
     <div class="wrap li-wrap">
       <aside class="li-profile">
         <div class="li-cover"></div>
         <img class="li-avatar" src="assets/images/presenting.jpg" alt="Matt Hatami">
-        <h2 id="liTitle">Matt Hatami</h2>
+        <h3>Matt Hatami</h3>
         <p class="li-headline">PhD Student @ UF | Extreme Rainfall &amp; Climate Risk</p>
         <p class="li-loc">Gainesville, Florida</p>
         <a class="li-follow" id="liFollow" href="https://www.linkedin.com/in/hatamimatt/" target="_blank" rel="noopener">View profile on LinkedIn</a>
-        <p class="li-note">Posts from my LinkedIn feed. Scroll the feed to see more.</p>
       </aside>
       <div class="li-feed" id="liFeed" tabindex="0" aria-label="LinkedIn posts, scrollable"></div>
     </div>
@@ -366,9 +400,10 @@ if (location.protocol === "file:") addEventListener("DOMContentLoaded", () => {
     <h2>About</h2>
     <div class="about">
       <div>
-        <p>I am a PhD student at the <a href="https://www.ufl.edu/" target="_blank" rel="noopener">University of Florida</a>, in the Climate Resilience Lab of <a href="https://nassernajibi.github.io/lab/" target="_blank" rel="noopener">Dr. Nasser Najibi’s research group</a> in the Department of Agricultural and Biological Engineering.</p>
+        <p>I am a PhD student in hydrology at the <a href="https://www.ufl.edu/" target="_blank" rel="noopener">University of Florida</a>, in the Climate Resilience Lab of <a href="https://nassernajibi.github.io/lab/" target="_blank" rel="noopener">Dr. Nasser Najibi’s research group</a> in the Department of Agricultural and Biological Engineering.</p>
         <p>I began my PhD in Civil Engineering at the University of South Carolina in the iWERS lab with Dr. Erfan Goharian, alongside graduate coursework in computer science, and moved to UF when my advisor left. Before that, I spent four months at the University of Groningen building an agent-based model of human behavior during cascading disasters.</p>
         <p>I earned an MSc in Civil Engineering for Risk Mitigation at Politecnico di Milano, with a thesis on deep learning and remote sensing in disaster management, and a BSc in Civil Engineering at Imam Khomeini International University, where river hydrology and hydraulics started my interest in flood risk.</p>
+        <p><a href="about.html">More about me, my education and awards →</a></p>
         <h3 class="sub">Experience</h3>
         <ul class="exp">
           <li><span class="yr">2025–</span><div><b>Geospatial Application Development Intern</b>, South Carolina Department of Transportation<p>Web GIS applications in ArcGIS Experience Builder, with custom React widgets and real-time data APIs.</p></div></li>
@@ -402,19 +437,19 @@ const DEG = 180/Math.PI, RAD = Math.PI/180;
 /* Two datasets share the globe: the past five days from GFS analyses (prepare_recent.py) and Helene in ERA5 (prepare_globe.py) */
 const DATASETS = {
   recent: {label:"Past 5 days", dir:"data/recent/", flow:["ivtu","ivtv"], flowK:0.00035, flowMin:900,
-    flowLabel:"Moving lines show vapor transport", defaultLayer:"ivt",
+    flowLabel:"Flow lines (vapor transport)", defaultLayer:"ivt",
     lede:"The globe shows the last five days of the atmosphere behind extreme rain: where moisture is flowing, how much the air holds, and where it is raining.",
     layers:{
-      ivt: {label:"Vapor transport", name:"Integrated vapor transport", unit:"kg m⁻¹ s⁻¹", cmap:"ivt", range:[0,2000], needs:["ivtu","ivtv"], vec:["ivtu","ivtv"]},
+      ivt: {label:"Vapor flow", name:"Integrated vapor transport", unit:"kg m⁻¹ s⁻¹", cmap:"ivt", range:[0,2000], needs:["ivtu","ivtv"], vec:["ivtu","ivtv"]},
       pw:  {label:"Moisture", name:"Precipitable water", unit:"mm", cmap:"pw", range:[10,75], needs:["pw"]},
-      wind:{label:"Wind 850 hPa", name:"Wind speed at 850 hPa (about 1.5 km up)", unit:"m/s", cmap:"wind", range:[0,40], needs:["u850","v850"], vec:["u850","v850"]},
+      wind:{label:"Wind", name:"Wind speed at 850 hPa (about 1.5 km up)", unit:"m/s", cmap:"wind", range:[0,40], needs:["u850","v850"], vec:["u850","v850"]},
       rain:{label:"Rain", name:"Rain in the past 6 hours", unit:"mm", cmap:"rain", range:[0,50], needs:["rain6"], inches:true}
     }},
   helene: {label:"Helene 2024", dir:"data/globe/", flow:["ivtu","ivtv"], flowK:0.00035, flowMin:900,
-    flowLabel:"Moving lines show vapor transport", defaultLayer:"ivt", start:"2024-09-27T00:00",
+    flowLabel:"Flow lines (vapor transport)", defaultLayer:"ivt", start:"2024-09-27T00:00",
     lede:"Switch back to the forecast any time; this view replays the week of Hurricane Helene, September 2024, in ERA5.",
     layers:{
-      ivt: {label:"Vapor transport", name:"Integrated vapor transport", unit:"kg m⁻¹ s⁻¹", cmap:"ivt", range:[0,2000], needs:["ivtu","ivtv"], vec:["ivtu","ivtv"]},
+      ivt: {label:"Vapor flow", name:"Integrated vapor transport", unit:"kg m⁻¹ s⁻¹", cmap:"ivt", range:[0,2000], needs:["ivtu","ivtv"], vec:["ivtu","ivtv"]},
       pw:  {label:"Moisture", name:"Precipitable water", unit:"mm", cmap:"pw", range:[10,75], needs:["pw"]},
       rain:{label:"Rain", name:"Rain in the past 6 hours", unit:"mm", cmap:"rain", range:[0,50], needs:["rain6"], inches:true}
     }}
@@ -422,9 +457,9 @@ const DATASETS = {
 let DS = DATASETS.recent, LAYERS = DS.layers;
 /* colour maps shared with helene_viewer.html: [fraction, [r,g,b,alpha]] */
 const CMAPS = {
-  rain:[[0,[120,170,230,0]],[0.012,[120,170,230,0]],[0.03,[110,165,230,.55]],[0.12,[45,110,215,.8]],[0.3,[50,180,120,.9]],[0.5,[245,215,60,.95]],[0.7,[240,110,40,1]],[0.87,[205,30,90,1]],[1,[245,170,245,1]]],
+  rain:[[0,[120,170,230,0]],[0.008,[120,170,230,0]],[0.05,[110,165,230,.55]],[0.12,[45,110,215,.8]],[0.3,[50,180,120,.9]],[0.5,[245,215,60,.95]],[0.7,[240,110,40,1]],[0.87,[205,30,90,1]],[1,[245,170,245,1]]],
   pw:[[0,[125,95,62,.7]],[0.3,[196,176,118,.75]],[0.55,[88,165,138,.8]],[0.75,[42,118,188,.85]],[0.9,[62,62,170,.9]],[1,[190,82,200,.95]]],
-  ivt:[[0,[0,0,0,0]],[0.11,[0,0,0,0]],[0.13,[248,228,120,.55]],[0.3,[248,178,62,.8]],[0.5,[232,98,52,.9]],[0.72,[186,40,92,.95]],[1,[120,42,165,1]]],
+  ivt:[[0,[0,0,0,0]],[0.06,[248,228,120,0]],[0.11,[248,228,120,.22]],[0.17,[248,228,120,.6]],[0.3,[248,178,62,.8]],[0.5,[232,98,52,.9]],[0.72,[186,40,92,.95]],[1,[120,42,165,1]]],
   wind:[[0,[0,0,0,0]],[0.2,[0,0,0,0]],[0.3,[120,200,220,.5]],[0.5,[80,170,230,.8]],[0.7,[150,110,230,.9]],[0.85,[230,90,170,.95]],[1,[255,200,140,1]]],
   prob:[[0,[0,0,0,0]],[0.04,[0,0,0,0]],[0.06,[150,200,240,.55]],[0.25,[90,150,230,.8]],[0.5,[150,90,220,.9]],[0.75,[220,60,150,.95]],[1,[255,190,120,1]]]
 };
@@ -464,17 +499,17 @@ function layout(){
     const w=hero.width-left;
     V.cx=(left+w/2)*d; V.cy=(hero.height/2+20)*d; V.R0=Math.min(w/2-36, hero.height/2-70)*d;
   }
-  V.ds=Math.max(1, Math.sqrt(V.W*V.H/170000));
+  V.ds=Math.max(1, Math.sqrt(V.W*V.H/420000));
   V.bw=Math.ceil(V.W/V.ds); V.bh=Math.ceil(V.H/V.ds);
   buf.width=V.bw; buf.height=V.bh; bufImg=bctx.createImageData(V.bw,V.bh);
   stars=Array.from({length:Math.round(V.W*V.H/(9000*d*d))},()=>[Math.random()*V.W,Math.random()*V.H,Math.random()*0.5+0.15]);
-  S.dirty=true; S.fieldKey=""; fieldDrawnKey=""; PIX.key=""; tctx.clearRect(0,0,V.W,V.H);
+  S.dirty=true; S.fieldKey=""; S.field2Key=""; fieldDrawnKey=""; PIX.key=""; tctx.clearRect(0,0,V.W,V.H);
 }
 
 /* ---------- projection (orthographic, written out for speed) ---------- */
 function setView(){
   V.R=V.R0*S.z; V.sp=Math.sin(S.phi*RAD); V.cp=Math.cos(S.phi*RAD);
-  proj.rotate([-S.lam,-S.phi]).scale(V.R).translate([V.cx,V.cy]);
+  proj.rotate([-S.lam,-S.phi]).scale(V.R).translate([V.cx,V.cy]).clipExtent([[-20,-20],[V.W+20,V.H+20]]);
 }
 function fwd(lon,lat){
   const l=(lon-S.lam)*RAD, p=lat*RAD, cl=Math.cos(p), cosl=Math.cos(l);
@@ -495,23 +530,27 @@ const graticule=d3.geoGraticule10();
 let NLON=360, NLAT=181, NCELL=NLON*NLAT, GD=1;  // grid size and spacing (degrees), set from each dataset's meta.json
 const NT=()=>S.meta.times.length;
 const PENDING={};  // in-flight downloads, so two callers asking for the same layer share one request
-function loadLayer(name){
-  const key=S.ds+"/"+name, ds=S.ds, meta=S.meta;
+// detail=true loads the dataset's 0.25 degree regional version of a layer (meta.detail), used when zoomed in
+function loadLayer(name, detail){
+  const key=S.ds+"/"+(detail?"d:":"")+name, ds=S.ds, meta=S.meta;
   if (S.raw[key]) return Promise.resolve(S.raw[key]);
   return PENDING[key] ||= (async()=>{
-    const L=meta.layers[name], r=await fetch(DATASETS[ds].dir+L.file);
+    const L=(detail?meta.detail:meta).layers[name], g=(detail?meta.detail:meta).grid||{nlat:181,nlon:360};
+    const r=await fetch(DATASETS[ds].dir+L.file);
     if (!r.ok){ delete PENDING[key]; throw new Error(name); }
-    return S.raw[key]={q:new Uint8Array(await r.arrayBuffer()), a:L.vmin, s:(L.vmax-L.vmin)/254, frames:L.frames||meta.times.length};
+    S.raw[key]={q:new Uint8Array(await r.arrayBuffer()), a:L.vmin, s:(L.vmax-L.vmin)/254, frames:L.frames||meta.times.length, n:g.nlat*g.nlon};
+    if (detail) S.dirty=true;
+    return S.raw[key];
   })();
 }
-const raw=name=>S.raw[S.ds+"/"+name];
+const raw=(name,detail)=>S.raw[S.ds+"/"+(detail?"d:":"")+name];
 const STILL={};  // decoded single-frame layers (thresholds and base rates), per dataset
 function still(name){ const key=S.ds+"/"+name; if (!STILL[key]||STILL[key].length!==NCELL) STILL[key]=frameArr(name,new Float32Array(NCELL)); return STILL[key]; }
-function frameArr(name, out){
+function frameArr(name, out, detail){
   // linear interpolation between the two frames around S.t (a single-frame layer is the same at every time)
-  const L=raw(name), n=L.frames, k0=Math.min(n-1,Math.floor(S.t)), k1=Math.min(n-1,k0+1), f=n>1?S.t-k0:0;
-  const q=L.q, o0=k0*NCELL, o1=k1*NCELL;
-  for (let i=0;i<NCELL;i++){
+  const L=raw(name,detail), n=L.frames, k0=Math.min(n-1,Math.floor(S.t)), k1=Math.min(n-1,k0+1), f=n>1?S.t-k0:0;
+  const q=L.q, N=L.n, o0=k0*N, o1=k1*N;
+  for (let i=0;i<N;i++){
     const a=q[o0+i], b=q[o1+i];
     out[i]= a===255||b===255 ? NaN : L.a+L.s*(a+(b-a)*f);
   }
@@ -526,6 +565,55 @@ function ensureField(){
   if (L.vec){ frameArr(L.vec[0],FIELD); frameArr(L.vec[1],TMP); for (let i=0;i<NCELL;i++) FIELD[i]=Math.hypot(FIELD[i],TMP[i]); }
   else frameArr(L.needs[0], FIELD);
   S.fieldKey=key; return true;
+}
+// The global grid is coarse (1 degree), and bilinear interpolation of it draws boxy contours.
+// FIELD2 holds it at twice the resolution with cubic (Catmull-Rom) midpoints, which keeps the
+// original values and smooths the shapes between them; NaN neighbours fall back to linear.
+const NLON1=()=>NLON, NLAT1=()=>NLAT, GD1=()=>GD;
+let FIELD2=new Float32Array(1), ROWS2=new Float32Array(1);
+function upsample2(){
+  const W=NLON, H=NLAT, W2=2*W, H2=2*H-1;
+  if (FIELD2.length!==W2*H2){ FIELD2=new Float32Array(W2*H2); ROWS2=new Float32Array(W2*H); }
+  const mid=(a,b,c,d)=>{ const v=(-a+9*b+9*c-d)/16; return v===v?v:(b+c)/2; };
+  for (let r=0;r<H;r++){  // along longitude, wrapping
+    const o=r*W, o2=r*W2;
+    for (let c=0;c<W;c++){
+      const cm=c===0?W-1:c-1, c1=c===W-1?0:c+1, c2=c1===W-1?0:c1+1;
+      ROWS2[o2+2*c]=FIELD[o+c]; ROWS2[o2+2*c+1]=mid(FIELD[o+cm],FIELD[o+c],FIELD[o+c1],FIELD[o+c2]);
+    }
+  }
+  for (let r=0;r<H;r++){  // along latitude, edge rows repeated
+    const rm=Math.max(0,r-1), r1=Math.min(H-1,r+1), r2=Math.min(H-1,r+2);
+    FIELD2.set(ROWS2.subarray(r*W2,(r+1)*W2), 2*r*W2);
+    if (r<H-1) for (let c=0;c<W2;c++) FIELD2[(2*r+1)*W2+c]=mid(ROWS2[rm*W2+c],ROWS2[r*W2+c],ROWS2[r1*W2+c],ROWS2[r2*W2+c]);
+  }
+}
+// the same for the 0.25 degree detail grid, once its layers have loaded
+let DG=null, DFIELD=new Float32Array(1), DTMP=new Float32Array(1);
+function ensureDetailField(){
+  const L=LAYERS[S.layer], key=S.ds+S.layer+S.t;
+  if (!S.meta||!S.meta.detail||!L.needs.every(n=>raw(n,true))) return false;
+  if (S.dfieldKey===key) return true;
+  const N=DG.nlat*DG.nlon; if (DFIELD.length!==N){ DFIELD=new Float32Array(N); DTMP=new Float32Array(N); }
+  if (L.vec){ frameArr(L.vec[0],DFIELD,true); frameArr(L.vec[1],DTMP,true); for (let i=0;i<N;i++) DFIELD[i]=Math.hypot(DFIELD[i],DTMP[i]); }
+  else frameArr(L.needs[0],DFIELD,true);
+  S.dfieldKey=key; return true;
+}
+const DETAIL_Z=1.6;  // load detail layers from this zoom
+function loadDetailLayers(){
+  if (S.meta&&S.meta.detail&&S.z>=DETAIL_Z) LAYERS[S.layer].needs.forEach(n=>loadLayer(n,true).catch(()=>{}));
+}
+// value at a point: the detail grid inside its box, the global grid elsewhere
+function sampleAt(lon,lat){
+  if (DG&&ensureDetailField()){
+    const gx=(lon-DG.lon0)/DG.d, gy=(DG.lat0-lat)/DG.d;
+    if (gx>=0&&gy>=0&&gx<=DG.nlon-1&&gy<=DG.nlat-1){
+      const c0=Math.min(DG.nlon-2,gx|0), r0=Math.min(DG.nlat-2,gy|0), fx=gx-c0, fy=gy-r0, i=r0*DG.nlon+c0, N=DG.nlon;
+      const v=(DFIELD[i]*(1-fx)+DFIELD[i+1]*fx)*(1-fy)+(DFIELD[i+N]*(1-fx)+DFIELD[i+N+1]*fx)*fy;
+      if (v===v) return v;
+    }
+  }
+  return sample(FIELD,lon,lat);
 }
 function ensureFlow(){
   const [fu,fv]=DS.flow;
@@ -543,15 +631,19 @@ function sample(arr, lon, lat){
 /* ---------- drawing ---------- */
 // Per buffer pixel, the grid cell and interpolation weights it samples. Recomputed only when the view
 // moves, so playback, hover highlights and other redraws of a still view reuse it.
-const PIX={key:"", a:null, b:null, fx:null, fy:null};
+const PIX={key:"", a:null, b:null, fx:null, fy:null, da:null, dfx:null, dfy:null, dw:null};
 let fieldDrawnKey="";
 function pixelMap(){
   // while the globe moves, every other pixel in each direction, copied to its neighbours
-  const {cx,cy,R,sp,cp,ds,bw,bh}=V, step=S.dragging||S.fly?2:1, key=[S.lam,S.phi,R,bw,bh,NLON,NLAT,GD,step].join("|");
+  // the global field is drawn from its 2x cubic upsample (FIELD2, see upsample2)
+  const NLON=2*NLON1(), NLAT=2*NLAT1()-1, GD=GD1()/2;
+  const {cx,cy,R,sp,cp,ds,bw,bh}=V, step=S.dragging||S.fly?2:1, key=[S.lam,S.phi,R,bw,bh,NLON,NLAT,GD,step,DG?S.ds:""].join("|");
   if (PIX.key===key) return;
   const n=bw*bh, R2=R*R, lam=S.lam;
-  if (!PIX.a||PIX.a.length!==n){ PIX.a=new Int32Array(n); PIX.b=new Int32Array(n); PIX.fx=new Float32Array(n); PIX.fy=new Float32Array(n); }
-  PIX.a.fill(-1);
+  if (!PIX.a||PIX.a.length!==n){ PIX.a=new Int32Array(n); PIX.b=new Int32Array(n); PIX.fx=new Float32Array(n); PIX.fy=new Float32Array(n);
+    PIX.da=new Int32Array(n); PIX.dfx=new Float32Array(n); PIX.dfy=new Float32Array(n); PIX.dw=new Float32Array(n); }
+  PIX.a.fill(-1); PIX.da.fill(-1);
+  const D=DG, BLEND=2;
   for (let j=0;j<bh;j+=step){
     const y=cy-(j+0.5)*ds;
     if (Math.abs(y)>=R) continue;
@@ -566,7 +658,15 @@ function pixelMap(){
       const gy=Math.min(NLAT-1.0001,Math.max(0,(90-lat)/GD));
       const c0=gx|0, r0=gy|0, o=j*bw+i;
       PIX.a[o]=r0*NLON+c0; PIX.b[o]=c0===NLON-1?1-NLON:1; PIX.fx[o]=gx-c0; PIX.fy[o]=gy-r0;
-      if (step===2) for (const q of [o+1, o+bw, o+bw+1]) if (q<n && (q%bw)>=i){ PIX.a[q]=PIX.a[o]; PIX.b[q]=PIX.b[o]; PIX.fx[q]=PIX.fx[o]; PIX.fy[q]=PIX.fy[o]; }
+      if (D){
+        const lo=lon-360*Math.floor((lon+180)/360), dx=(lo-D.lon0)/D.d, dy=(D.lat0-lat)/D.d;
+        if (dx>=0&&dy>=0&&dx<=D.nlon-1&&dy<=D.nlat-1){
+          const dc=Math.min(D.nlon-2,dx|0), dr=Math.min(D.nlat-2,dy|0), e=Math.min(dx,D.nlon-1-dx,dy,D.nlat-1-dy)*D.d/BLEND;
+          PIX.da[o]=dr*D.nlon+dc; PIX.dfx[o]=dx-dc; PIX.dfy[o]=dy-dr; PIX.dw[o]=e>=1?1:e*e*(3-2*e);
+        }
+      }
+      if (step===2) for (const q of [o+1, o+bw, o+bw+1]) if (q<n && (q%bw)>=i){ PIX.a[q]=PIX.a[o]; PIX.b[q]=PIX.b[o]; PIX.fx[q]=PIX.fx[o]; PIX.fy[q]=PIX.fy[o];
+        PIX.da[q]=PIX.da[o]; PIX.dfx[q]=PIX.dfx[o]; PIX.dfy[q]=PIX.dfy[o]; PIX.dw[q]=PIX.dw[o]; }
     }
   }
   PIX.key=key;
@@ -575,20 +675,43 @@ function renderField(){
   const img=bufImg.data;
   if (!ensureField()) { img.fill(0); bctx.putImageData(bufImg,0,0); fieldDrawnKey=""; return; }
   pixelMap();
-  const drawn=PIX.key+"|"+S.ds+"|"+S.fieldKey;
+  const hasD=!!DG&&ensureDetailField(), drawn=PIX.key+"|"+S.ds+"|"+S.fieldKey+"|"+(hasD?S.dfieldKey:"");
   if (drawn===fieldDrawnKey) return;  // the buffer already holds this view and frame
   img.fill(0);
   const L=LAYERS[S.layer], lut=LUT[L.cmap], v0=L.range[0], sc=255/(L.range[1]-L.range[0]);
-  const {a:A,b:B,fx:FX,fy:FY}=PIX, N=NLON, F=FIELD;
+  if (S.field2Key!==S.fieldKey){ upsample2(); S.field2Key=S.fieldKey; }
+  const {a:A,b:B,fx:FX,fy:FY,da:DA,dfx:DX,dfy:DY,dw:DW}=PIX, N=2*NLON, F=FIELD2, DN=hasD?DG.nlon:0, DF=DFIELD;
   for (let o=0;o<A.length;o++){
     const a=A[o]; if (a<0) continue;
     const b=B[o], fx=FX[o], fy=FY[o];
-    const v=(F[a]*(1-fx)+F[a+b]*fx)*(1-fy)+(F[a+N]*(1-fx)+F[a+N+b]*fx)*fy;
+    let v=(F[a]*(1-fx)+F[a+b]*fx)*(1-fy)+(F[a+N]*(1-fx)+F[a+N+b]*fx)*fy;
+    const d=hasD?DA[o]:-1;
+    if (d>=0){
+      const x=DX[o], y=DY[o], vd=(DF[d]*(1-x)+DF[d+1]*x)*(1-y)+(DF[d+DN]*(1-x)+DF[d+DN+1]*x)*y;
+      if (vd===vd) v=v===v?v+(vd-v)*DW[o]:vd;
+    }
     if (v!==v) continue;
     let q=(v-v0)*sc; q=q<0?0:q>255?255:q|0; q*=4;
     const p=o*4; img[p]=lut[q]; img[p+1]=lut[q+1]; img[p+2]=lut[q+2]; img[p+3]=lut[q+3];
   }
   bctx.putImageData(bufImg,0,0); fieldDrawnKey=drawn;
+}
+const MAP={key:"", under:document.createElement("canvas"), over:document.createElement("canvas")};
+function renderMap(land){
+  const {W,H,cx,cy,R,dpr}=V;
+  for (const c of [MAP.under,MAP.over]) if (c.width!==W||c.height!==H){ c.width=W; c.height=H; }
+  const u=MAP.under.getContext("2d"), o=MAP.over.getContext("2d"), pu=d3.geoPath(proj,u), po=d3.geoPath(proj,o);
+  u.clearRect(0,0,W,H); o.clearRect(0,0,W,H);
+  // ocean with a soft light source at upper left, then land
+  const g=u.createRadialGradient(cx-R*0.4,cy-R*0.45,R*0.05,cx,cy,R);
+  g.addColorStop(0,"#1b4863"); g.addColorStop(1,"#0a1d2b");
+  u.fillStyle=g; u.beginPath(); u.arc(cx,cy,R,0,2*Math.PI); u.fill();
+  if (land){ u.beginPath(); pu(land); u.fillStyle="#2a4350"; u.fill(); }
+  o.lineJoin="round";
+  o.beginPath(); po(graticule); o.strokeStyle="rgba(220,235,245,.07)"; o.lineWidth=dpr*0.8; o.stroke();
+  if (GEO.states && S.z>1.4){ o.beginPath(); po(GEO.states); o.strokeStyle="rgba(225,236,242,.3)"; o.lineWidth=dpr*0.7; o.stroke(); }
+  if (GEO.borders){ o.beginPath(); po(GEO.borders); o.strokeStyle="rgba(225,236,242,.4)"; o.lineWidth=dpr*0.8; o.stroke(); }
+  if (land){ o.beginPath(); po(land); o.strokeStyle="rgba(235,243,247,.72)"; o.lineWidth=dpr*0.9; o.stroke(); }
 }
 function draw(){
   if (!bufImg) return;
@@ -602,20 +725,17 @@ function draw(){
   let g=ctx.createRadialGradient(cx,cy,R*0.98,cx,cy,R*1.18);
   g.addColorStop(0,"rgba(110,190,235,.32)"); g.addColorStop(1,"rgba(110,190,235,0)");
   ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,R*1.18,0,2*Math.PI); ctx.fill();
-  // ocean with a soft light source at upper left
-  g=ctx.createRadialGradient(cx-R*0.4,cy-R*0.45,R*0.05,cx,cy,R);
-  g.addColorStop(0,"#1b4863"); g.addColorStop(1,"#0a1d2b");
-  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,R,0,2*Math.PI); ctx.fill();
-  if (GEO.land){ ctx.beginPath(); path(GEO.land); ctx.fillStyle="#2a4350"; ctx.fill(); }
+  // map layers (ocean, land, lines) change only with the view, so they are drawn into two cached
+  // canvases and reused while only the data changes; moving views use the lighter 1:110m land
+  const moving=S.dragging||!!S.fly, land=moving&&GEO.land110?GEO.land110:GEO.land;
+  const mkey=[S.lam,S.phi,R,W,H,!!land&&(land===GEO.land110),!!GEO.land,!!GEO.states,!!GEO.borders,S.z>1.4].join("|");
+  if (mkey!==MAP.key){ MAP.key=mkey; renderMap(land); }
+  ctx.drawImage(MAP.under,0,0);
   // data layer
   ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,R,0,2*Math.PI); ctx.clip();
   ctx.imageSmoothingEnabled=true; ctx.drawImage(buf,0,0,V.bw,V.bh,0,0,V.bw*V.ds,V.bh*V.ds);
   ctx.restore();
-  ctx.lineJoin="round";
-  ctx.beginPath(); path(graticule); ctx.strokeStyle="rgba(220,235,245,.07)"; ctx.lineWidth=dpr*0.8; ctx.stroke();
-  if (GEO.states && S.z>1.4){ ctx.beginPath(); path(GEO.states); ctx.strokeStyle="rgba(225,236,242,.3)"; ctx.lineWidth=dpr*0.7; ctx.stroke(); }
-  if (GEO.borders){ ctx.beginPath(); path(GEO.borders); ctx.strokeStyle="rgba(225,236,242,.4)"; ctx.lineWidth=dpr*0.8; ctx.stroke(); }
-  if (GEO.land){ ctx.beginPath(); path(GEO.land); ctx.strokeStyle="rgba(235,243,247,.72)"; ctx.lineWidth=dpr*0.9; ctx.stroke(); }
+  ctx.drawImage(MAP.over,0,0);
   // limb darkening for depth
   g=ctx.createRadialGradient(cx,cy,R*0.55,cx,cy,R);
   g.addColorStop(0,"rgba(3,10,16,0)"); g.addColorStop(1,"rgba(3,10,16,.5)");
@@ -680,7 +800,7 @@ async function setLayer(k){
   S.layer=k;
   document.querySelectorAll("#layers button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===k)));
   drawLegend(); S.dirty=true;
-  if (S.meta){ $("when").innerHTML=fmtTime(Math.round(S.t)); try { await Promise.all(LAYERS[k].needs.map(loadLayer)); } catch(e){} S.dirty=true; updateReadout(); }
+  if (S.meta){ $("when").innerHTML=fmtTime(Math.round(S.t)); try { await Promise.all(LAYERS[k].needs.map(n=>loadLayer(n))); } catch(e){} loadDetailLayers(); S.dirty=true; updateReadout(); }
 }
 function drawLegend(){
   const L=LAYERS[S.layer], c=$("cbar").getContext("2d"), img=c.createImageData(256,1), lut=LUT[L.cmap];
@@ -713,7 +833,7 @@ function updateReadout(){
   const loc=`${Math.abs(lat).toFixed(1)}°${lat>=0?"N":"S"}, ${Math.abs(lon).toFixed(1)}°${lon<0?"W":"E"}`;
   let txt=loc;
   if (ensureField()){
-    const v=sample(FIELD,lon,lat), L=LAYERS[S.layer];
+    const v=sampleAt(lon,lat), L=LAYERS[S.layer];
     if (v===v){ const val=L.pct?`${Math.round(v*100)}% chance`:`${v>=100?Math.round(v).toLocaleString("en-US"):v.toFixed(1)} ${L.unit}${L.inches?` (${(v/25.4).toFixed(1)} in)`:""}`;
       txt=`<b>${L.label}</b> ${val}<br>${loc}`; }
   }
@@ -721,6 +841,7 @@ function updateReadout(){
 }
 let detailLoading=false;
 async function loadDetail(){
+  loadDetailLayers();
   if (detailLoading || S.z<1.4) return; detailLoading=true;
   try {
     const [land, us]=await Promise.all([fetch(GEO_CDN+"world-atlas@2.0.2/land-50m.json").then(r=>r.json()), fetch(GEO_CDN+"us-atlas@3.0.1/states-10m.json").then(r=>r.json())]);
@@ -790,7 +911,7 @@ function frame(ts){
 /* ---------- start ---------- */
 async function setDataset(key){
   pause(); S.ds=key; DS=DATASETS[key]; LAYERS=DS.layers; S.layer=DS.defaultLayer;
-  document.querySelectorAll("#datasets button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===key)));
+  document.querySelectorAll("#datasets button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===(key==="recent"?"recent":"events"))));
   $("flowLabel").textContent=DS.flowLabel; $("ledeData").textContent=DS.lede;
   if (!S.metas[key]){ const r=await fetch(DS.dir+"meta.json",{cache:"no-cache"}); if (!r.ok) throw new Error(key); S.metas[key]=await r.json(); }
   if (S.ds!==key) return;  // another switch happened while loading
@@ -799,12 +920,14 @@ async function setDataset(key){
   LAYERS=Object.fromEntries(Object.entries(DS.layers).filter(([,L])=>L.needs.every(n=>S.meta.layers[n])));
   if (!LAYERS[S.layer]) S.layer=Object.keys(LAYERS)[0];
   $("layers").innerHTML=""; $("layers").className="seg"+(Object.keys(LAYERS).length===4?" four":"");
+  $("evList").hidden=key==="recent"; $("dsInfo").hidden=key!=="recent";
+  $("evList").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===key)));
   for (const [k,L] of Object.entries(LAYERS)){
-    const b=document.createElement("button"); b.type="button"; b.textContent=L.label; b.dataset.k=k; b.onclick=()=>setLayer(k); $("layers").appendChild(b);
+    const b=document.createElement("button"); b.type="button"; b.textContent=L.label; b.title=L.name; b.dataset.k=k; b.onclick=()=>setLayer(k); $("layers").appendChild(b);
   }
   const g=S.meta.grid||{nlat:181,nlon:360,d:1};
   if (g.nlat!==NLAT||g.nlon!==NLON){ NLAT=g.nlat; NLON=g.nlon; NCELL=NLAT*NLON; FIELD=new Float32Array(NCELL); TMP=new Float32Array(NCELL); U=new Float32Array(NCELL); Vv=new Float32Array(NCELL); }
-  GD=g.d; S.fieldKey=""; S.flowKey=""; parts=[]; tctx.clearRect(0,0,V.W,V.H);
+  GD=g.d; S.fieldKey=""; S.field2Key=""; S.flowKey=""; S.dfieldKey=""; DG=S.meta.detail?S.meta.detail.grid:null; PIX.key=""; parts=[]; tctx.clearRect(0,0,V.W,V.H);
   const t=S.meta.times, last=new Date(t[t.length-1]+"Z");
   $("dsInfo").textContent=key==="recent"
     ? `NOAA GFS analyses every 6 hours, ${fmtDay(new Date(t[0]+"Z"))} to ${fmtDay(last)} ${t[t.length-1].slice(11,13)} UTC. Rain is the model's estimate for each 6 hours, not a gauge or radar measurement.`
@@ -812,7 +935,7 @@ async function setDataset(key){
   $("time").max=NT()-1;
   const start=DS.start?S.meta.times.indexOf(DS.start):NT()-1; setTime(start>=0?start:0);  // the recent data opens on its newest time
   await setLayer(S.layer);
-  await Promise.all(S.flow?DS.flow.map(loadLayer):[]).catch(()=>{});
+  await Promise.all(S.flow?DS.flow.map(n=>loadLayer(n)):[]).catch(()=>{});
   S.dirty=true;
   Object.values(LAYERS).flatMap(L=>L.needs).forEach(n=>loadLayer(n).catch(()=>{}));  // the rest in the background
 }
@@ -825,23 +948,34 @@ Writing.load().then(items=>{ $("writingMag").innerHTML=Writing.magazine(items); 
 const liDate=urn=>{ const id=urn.match(/(\d{15,})/); return id?new Date(Number(BigInt(id[1])>>22n)):null; };
 fetch("data/linkedin.json",{cache:"no-cache"}).then(r=>r.json()).then(li=>{
   if (li.profile) $("liFollow").href=li.profile;
-  const posts=[...li.posts].sort((a,b)=>(liDate(b.urn)||0)-(liDate(a.urn)||0));
-  $("liFeed").innerHTML=posts.map(p=>{ const d=liDate(p.urn);
+  const when=p=>p.date?new Date(p.date+"T12:00:00Z"):liDate(p.urn);  // the export's date, else the one in the ID
+  const posts=[...li.posts].sort((a,b)=>(when(b)||0)-(when(a)||0));  // newest first
+  $("liFeed").innerHTML=posts.map(p=>{ const d=when(p);
     return `<article class="li-post"><iframe src="https://www.linkedin.com/embed/feed/update/${encodeURIComponent(p.urn)}" height="${p.height||640}" loading="lazy" title="LinkedIn post${d?`, ${d.toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}`:""}" allowfullscreen></iframe></article>`; }).join("")
     +`<div class="li-more"><a href="${Writing.esc((li.profile||"https://www.linkedin.com/in/hatamimatt/").replace(/\/?$/,"/")+"recent-activity/all/")}" target="_blank" rel="noopener">See all posts on LinkedIn ↗</a></div>`;
 }).catch(()=>{ $("liFeed").innerHTML=`<div class="li-more"><a href="https://www.linkedin.com/in/hatamimatt/recent-activity/all/" target="_blank" rel="noopener">See my posts on LinkedIn ↗</a></div>`; });
 
+const goSE=()=>flyTo(SE.lam,SE.phi,fitSE());
+// past events on the globe, newest first; each key is a dataset in DATASETS
+const EVENTS=[
+  {key:"helene", name:"Hurricane Helene", when:"23–29 Sep 2024"}
+];
+
 (async function init(){
-  for (const [k,D] of Object.entries(DATASETS)){
-    const b=document.createElement("button"); b.type="button"; b.textContent=D.label; b.dataset.k=k;
-    b.onclick=()=>setDataset(k).catch(()=>{ $("dsInfo").textContent=`${D.label} data not found.`; }); $("datasets").appendChild(b);
+  const open=(k,fly)=>setDataset(k).then(()=>{ if (fly) goSE(); }).catch(()=>{ $("dsInfo").hidden=false; $("dsInfo").textContent=`${DATASETS[k].label} data not found.`; });
+  for (const [k,label] of [["recent","Past 5 days"],["events","Past events"]]){
+    const b=document.createElement("button"); b.type="button"; b.textContent=label; b.dataset.k=k;
+    b.onclick=()=>k==="recent"?open("recent"):open(S.ds!=="recent"?S.ds:EVENTS[0].key, true); $("datasets").appendChild(b);
   }
+  $("evList").innerHTML=EVENTS.map(e=>`<button type="button" data-k="${e.key}"><b>${e.name}</b><span>${e.when}</span></button>`).join("")
+    +`<p class="soon">More events are on the way.</p>`;
+  $("evList").querySelectorAll("button").forEach(b=>b.onclick=()=>open(b.dataset.k, true));
   $("flow").checked=S.flow;
-  $("flow").onchange=e=>{ S.flow=e.target.checked; if (S.flow && S.meta) Promise.all(DS.flow.map(loadLayer)).catch(()=>{}); };
+  $("flow").onchange=e=>{ S.flow=e.target.checked; if (S.flow && S.meta) Promise.all(DS.flow.map(n=>loadLayer(n))).catch(()=>{}); };
   $("play").onclick=()=>S.playing?pause():play();
   $("time").addEventListener("input",e=>{ pause(); setTime(+e.target.value,true); });
-  const goSE=()=>flyTo(SE.lam,SE.phi,fitSE());
-  $("goSE").onclick=goSE; $("ctaFly").onclick=goSE;
+
+  $("ctaFly").onclick=goSE;
   $("goGlobe").onclick=()=>flyTo(S.lam,18,1,()=>{ S.auto=!reduceMotion; });
   $("zoomIn").onclick=()=>zoomBy(1.4); $("zoomOut").onclick=()=>zoomBy(1/1.4);
   drawLegend();
@@ -850,7 +984,8 @@ fetch("data/linkedin.json",{cache:"no-cache"}).then(r=>r.json()).then(li=>{
 
   try {
     const [land, countries]=await Promise.all([fetch(GEO_CDN+"world-atlas@2.0.2/land-110m.json").then(r=>r.json()), fetch(GEO_CDN+"world-atlas@2.0.2/countries-110m.json").then(r=>r.json())]);
-    if (!GEO.land) GEO.land=topojson.feature(land, land.objects.land);
+    GEO.land110=topojson.feature(land, land.objects.land);
+    if (!GEO.land) GEO.land=GEO.land110;
     GEO.borders=topojson.mesh(countries, countries.objects.countries, (a,b)=>a!==b);
     S.dirty=true;
   } catch(e){}

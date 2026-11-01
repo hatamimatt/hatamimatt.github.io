@@ -2,7 +2,7 @@
 """The last five days of the atmosphere behind extreme rain, from NOAA's GFS analyses.
 
 For every 6-hour analysis time in the past five days (20 times, ending at the newest
-complete GFS cycle), reads from the GFS 1 degree files on AWS (no account needed):
+complete GFS cycle), reads from the GFS 0.25 degree files on AWS (no account needed):
   - integrated vapor transport (IVT), east and north components: specific humidity
     times wind, integrated from the surface (or 1000 hPa) up to 300 hPa
   - precipitable water (total column water vapor)
@@ -10,10 +10,12 @@ complete GFS cycle), reads from the GFS 1 degree files on AWS (no account needed
   - rain in the 6 hours up to that time (the first 6 hours of the previous cycle's run,
     so a model estimate, not a gauge or radar measurement)
 
-Writes data/recent/ in the same format as data/globe/ (prepare_globe.py):
-    meta.json    analysis times, grid, layers (file, vmin, vmax)
+Writes data/recent/ in the same format as data/globe/ (prepare_globe.py), with the
+global fields averaged to 1 degree, plus data/recent/detail/ at the full 0.25 degree over
+North America and the surrounding oceans, which the globe uses when zoomed in:
+    meta.json    analysis times, grid, layers (file, vmin, vmax), detail (grid, layers)
     <layer>.bin  uint8, 0..254 scaled between vmin and vmax, 255 = missing;
-                 frames in time order, rows from 90N to 90S, columns from 180W
+                 frames in time order, rows from north to south, columns from west
 Decoded times are cached in .cache/recent/, so each 6-hourly run downloads one new time.
 GFS data is from NOAA and in the public domain. Needs numpy and eccodes.
 
@@ -25,9 +27,11 @@ from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 
 from prepare_forecasts import decode, get
+from prepare_now import to_one_degree
 
-BASE = "https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.{c:%Y%m%d}/{c:%H}/atmos/gfs.t{c:%H}z.pgrb2.1p00.f{f:03d}"
-LEVELS = [1000, 975, 950, 925, 900, 850, 800, 750, 700, 650, 600, 550, 500, 450, 400, 350, 300]  # hPa
+BASE = "https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.{c:%Y%m%d}/{c:%H}/atmos/gfs.t{c:%H}z.pgrb2.0p25.f{f:03d}"
+LEVELS = [1000, 950, 900, 850, 800, 750, 700, 600, 500, 400, 300]  # hPa; IVT integrated over these
+DETAIL = {"lat0": 55.0, "lat1": 10.0, "lon0": -130.0, "lon1": -55.0}  # 0.25 degree box: north, south, west, east
 TIMES = 20                    # 6-hourly, five days
 G = 9.80665
 CACHE = os.path.join(".cache", "recent")
@@ -51,8 +55,8 @@ def field(url, idx, key):
     start, end = idx[key]
     data = get_range(url, start, end)
     vals, d, lon0 = decode(data)
-    assert abs(d - 1) < 1e-6 and abs(lon0) < 1e-6, "expected the GFS 1 degree grid starting at 0E"
-    return np.roll(vals, 180, axis=1)  # columns from 180W like the other globe data
+    assert abs(d - 0.25) < 1e-6 and abs(lon0) < 1e-6, "expected the GFS 0.25 degree grid starting at 0E"
+    return np.roll(vals, 720, axis=1)  # columns from 180W like the other globe data
 
 
 def get_range(url, start, end):
@@ -68,7 +72,7 @@ def get_range(url, start, end):
 
 
 def latest_cycle(now):
-    """Newest cycle whose 6 h file is published (GFS 1 degree files appear about 4 hours after the cycle)."""
+    """Newest cycle whose 6 h file is published (GFS files appear about 4 hours after the cycle)."""
     c = now.replace(minute=0, second=0, microsecond=0, hour=now.hour // 6 * 6)
     for _ in range(8):
         try:
@@ -80,8 +84,8 @@ def latest_cycle(now):
 
 
 def analysis(t):
-    """All layers for one analysis time, cached as float32."""
-    path = os.path.join(CACHE, f"{t:%Y%m%d%H}.npz")
+    """All layers for one analysis time at 0.25 degree, cached as float32."""
+    path = os.path.join(CACHE, f"{t:%Y%m%d%H}_0p25.npz")
     if os.path.exists(path):
         return dict(np.load(path))
     url0 = BASE.format(c=t, f=0)
@@ -126,21 +130,27 @@ def main():
         frames.append(analysis(t))
         print(f"  {t:%Y-%m-%d %H} UTC ({n}/{len(times)})", flush=True)
 
-    layers = {}
+    r0, r1 = round((90 - DETAIL["lat0"]) * 4), round((90 - DETAIL["lat1"]) * 4)
+    c0, c1 = round((DETAIL["lon0"] + 180) * 4), round((DETAIL["lon1"] + 180) * 4)
+    os.makedirs(os.path.join(args.out, "detail"), exist_ok=True)
+    layers, detail = {}, {}
     for name, (lo, hi) in RANGES.items():
-        quantize(np.stack([f[name] for f in frames]), lo, hi).tofile(os.path.join(args.out, f"{name}.bin"))
+        quantize(np.stack([to_one_degree(f[name]) for f in frames]), lo, hi).tofile(os.path.join(args.out, f"{name}.bin"))
+        quantize(np.stack([f[name][r0:r1 + 1, c0:c1 + 1] for f in frames]), lo, hi).tofile(os.path.join(args.out, "detail", f"{name}.bin"))
         layers[name] = {"file": f"{name}.bin", "vmin": lo, "vmax": hi}
+        detail[name] = {"file": f"detail/{name}.bin", "vmin": lo, "vmax": hi}
     meta = {
-        "source": "NOAA GFS analyses, 1 degree (NOAA Open Data Dissemination on AWS)",
+        "source": "NOAA GFS analyses, 0.25 degree (NOAA Open Data Dissemination on AWS)",
         "created": dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M"),
         "grid": {"nlat": 181, "nlon": 360, "lat0": 90, "lon0": -180, "d": 1},
         "times": [f"{t:%Y-%m-%dT%H:%M}" for t in times],
         "layers": layers,
+        "detail": {"grid": {"nlat": r1 - r0 + 1, "nlon": c1 - c0 + 1, "lat0": DETAIL["lat0"], "lon0": DETAIL["lon0"], "d": 0.25}, "layers": detail},
     }
     with open(os.path.join(args.out, "meta.json"), "w") as fh:
         json.dump(meta, fh, indent=1)
     # drop cached times older than the window
-    keep = {f"{t:%Y%m%d%H}.npz" for t in times}
+    keep = {f"{t:%Y%m%d%H}_0p25.npz" for t in times}
     for f in os.listdir(CACHE):
         if f not in keep:
             os.remove(os.path.join(CACHE, f))
