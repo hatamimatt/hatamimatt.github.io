@@ -171,7 +171,24 @@ section.block{padding:80px 28px 8px}
 .proj-links a,.talks a{color:var(--accent);text-decoration:none}
 .proj-links a:hover,.talks a:hover{text-decoration:underline}
 .talks{border-top:1px solid var(--line)}
-.talks a{font:600 1.05rem/1.35 var(--serif)}
+.talks a,.talks .tt{font:600 1.05rem/1.35 var(--serif)}
+.proj-group{font:600 1.25rem/1.3 var(--serif);margin:34px 0 4px;color:var(--ink)}
+.proj-group-intro{margin:0 0 16px;color:var(--muted);font-size:.95rem}
+.proj.feature{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:color-mix(in srgb,var(--accent) 6%,var(--panel))}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.vid{margin:0}
+.vid-frame{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#0a1620}
+.vid-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block}
+.vid-frame img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s,filter .4s;filter:saturate(.9)}
+.vid-frame button:hover img,.vid-frame button:focus-visible img{transform:scale(1.03);filter:saturate(1.05)}
+.vid-frame button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.vid-play{position:absolute;left:50%;top:50%;width:62px;height:44px;margin:-22px 0 0 -31px;border-radius:12px;background:rgba(10,20,28,.78);display:grid;place-items:center;transition:background .2s}
+.vid-play::after{content:"";border-style:solid;border-width:10px 0 10px 17px;border-color:transparent transparent transparent #fff;margin-left:4px}
+.vid-frame button:hover .vid-play{background:#cc0000}
+.vid-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid figcaption{padding:10px 2px 0}
+.vid .vt{font:600 1.05rem/1.3 var(--serif);margin:0 0 3px}
+.vid .vm{margin:0;font-size:.86rem;color:var(--muted)}
 .talks p,.exp p{margin:3px 0 0;font-size:.9rem;color:var(--muted)}
 .about{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:44px;align-items:start}
 .about p{margin:0 0 14px;max-width:40rem}
@@ -238,7 +255,8 @@ if (location.protocol === "file:") addEventListener("DOMContentLoaded", () => {
       <li><a href="#writing">Writing</a></li>
       <li><a href="#linkedin">LinkedIn</a></li>
       <li><a href="#publications">Publications</a></li>
-      <li><a href="#projects">Projects</a></li>
+      <li><a href="#projects">Tools</a></li>
+      <li><a href="#talks">Talks</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="assets/CV_HatamiMatt.pdf" target="_blank" rel="noopener">CV</a></li>
     </ul>
@@ -370,29 +388,41 @@ if (location.protocol === "file:") addEventListener("DOMContentLoaded", () => {
   </section>
 
   <section class="block wrap" id="projects">
-    <h2>Projects and tools</h2>
-    <p class="intro">Dashboards, data pipelines and tools from my research and coursework. More are listed in the <a href="https://www.linkedin.com/in/hatamimatt/details/projects/" target="_blank" rel="noopener">projects section of my LinkedIn profile</a>.</p>
+    <h2>Tools and projects</h2>
+    <p class="intro">Software, datasets and reports I have built. More are listed in the <a href="https://www.linkedin.com/in/hatamimatt/details/projects/" target="_blank" rel="noopener">projects section of my LinkedIn profile</a>.</p>
+
+    <h3 class="proj-group">Climate extremes: tools and datasets</h3>
+    <p class="proj-group-intro">What I am building now, for understanding and assessing hydroclimate extremes and their risks.</p>
     <div class="proj-grid">
-      <article class="proj"><p class="proj-tags">GIS · Dashboard</p><h3>Coastal Vulnerability Dashboard</h3><p>Interactive GIS dashboard for coastal vulnerability assessment using multi-criteria decision-making and probabilistic principal component analysis.</p><p class="proj-links"><a href="https://southcarolina.maps.arcgis.com/apps/dashboards/fc7eef0cb3b844dea1dbbb7500b5dffd" target="_blank" rel="noopener">Dashboard ↗</a><a href="https://storymaps.arcgis.com/stories/970c3abd8da8438192aabd3132bcb2b3" target="_blank" rel="noopener">StoryMap ↗</a></p></article>
-      <article class="proj"><p class="proj-tags">Earth Engine · Python · Machine learning</p><h3>End-to-End Flood Dataset Pipeline</h3><p>Extracts flood extents from Sentinel-1 SAR before and after events with the SPIDER framework, then cuts georeferenced 256×256 chips into balanced training sets for flood detection models.</p><p class="proj-links"><a href="https://github.com/hatamimatt/EndtoEnd_FloodDataset_Pipeline" target="_blank" rel="noopener">GitHub ↗</a></p></article>
-      <article class="proj"><p class="proj-tags">Earth Engine · Land cover</p><h3>NLCD Land Cover Analysis Tool</h3><p>Cloud-based tool that computes land cover shares (wetlands, forests, developed land and more) for states, counties or tracts in minutes instead of hours.</p><p class="proj-links"><a href="https://code.earthengine.google.com/607476fcfe540558f28579a6801d0b26" target="_blank" rel="noopener">Open tool ↗</a><a href="https://youtu.be/XMZxnqovWe4" target="_blank" rel="noopener">Demo ↗</a></p></article>
-      <article class="proj"><p class="proj-tags">Streamlit · Statistics</p><h3>Interactive Distribution Playground</h3><p>Web app for exploring probability distributions in real time: adjust parameters, compare distributions and see the mathematics behind them.</p><p class="proj-links"><a href="https://distributionplaygroundpy-lrxuyld3rdswjs4ucblhxn.streamlit.app/" target="_blank" rel="noopener">Live app ↗</a><a href="https://youtu.be/p3gCAjmaiPU" target="_blank" rel="noopener">Demo ↗</a></p></article>
-      <article class="proj"><p class="proj-tags">Machine learning · Remote sensing</p><h3>Transfer Learning with the Prithvi Foundation Model</h3><p>Fine-tuning a geospatial foundation model on remote sensing data for environmental monitoring.</p><p class="proj-links"><a href="assets/reports/csce885.pdf" target="_blank" rel="noopener">Report (PDF) ↗</a></p></article>
-      <article class="proj"><p class="proj-tags">ArcGIS Pro · WebGIS</p><h3>WebGIS for Seismic Shelter Planning</h3><p>Geospatial analysis to optimize emergency shelter locations in Amatrice, Italy.</p><p class="proj-links"><a href="assets/reports/GPMReport.pdf" target="_blank" rel="noopener">Report ↗</a><a href="assets/reports/GPEMLight.pdf" target="_blank" rel="noopener">Slides ↗</a></p></article>
-      <article class="proj"><p class="proj-tags">Geology · Photogrammetry · Geophysics</p><h3>Shallow Landslide Risk Assessment</h3><p>Geological, photogrammetric and geophysical methods combined to investigate rainfall-induced landslides.</p><p class="proj-links"><a href="assets/reports/GETUSpdf.pdf" target="_blank" rel="noopener">Report ↗</a></p></article>
-      <article class="proj"><p class="proj-tags">Risk assessment</p><h3>Garfagnana Valley Risk Assessment</h3><p>Systematic assessment of hazards, vulnerability and exposure for a whole valley.</p><p class="proj-links"><a href="assets/reports/garfananaProject.pdf" target="_blank" rel="noopener">Report ↗</a></p></article>
+      <article class="proj feature"><p class="proj-tags">Interactive · GFS · ERA5</p><h3>Atmosphere-behind-extreme-rain globe</h3><p>The globe on this site: the last five days of vapor transport, moisture, wind and rain from NOAA's GFS analyses, refreshed every six hours, with past events such as Hurricane Helene to replay.</p><p class="proj-links"><a href="#top">Open the globe ↑</a></p></article>
+      <article class="proj feature"><p class="proj-tags">Interactive · ERA5 · Forecast verification</p><h3>Hurricane Helene case study</h3><p>An hour-by-hour replay of the winds, moisture and rain behind Helene's inland flooding, and a look at which ingredients were already unusual weeks before landfall and what the forecasts said.</p><p class="proj-links"><a href="helene_viewer.html">Replay</a><a href="before_helene.html">Before Helene</a></p></article>
+      <article class="proj"><p class="proj-tags">Dataset · Natural hazards</p><h3>Geospatial Dataset for Natural Hazard Risk in the US</h3><p>A comprehensive geospatial dataset for risk assessments of natural hazards across the United States, published in <i>Geoscience Data Journal</i> (2026).</p><p class="proj-links"><a href="https://scholar.google.com/citations?view_op=view_citation&amp;hl=en&amp;user=N0m5rRUAAAAJ&amp;citation_for_view=N0m5rRUAAAAJ:Tyk-4Ss8FVUC" target="_blank" rel="noopener">Paper ↗</a></p></article>
+      <article class="proj"><p class="proj-tags">Earth Engine · Python · Floods</p><h3>End-to-End Flood Dataset Pipeline</h3><p>Extracts flood extents from Sentinel-1 SAR before and after events with the SPIDER framework, then cuts georeferenced 256×256 chips into balanced training sets for flood detection models.</p><p class="proj-links"><a href="https://github.com/hatamimatt/EndtoEnd_FloodDataset_Pipeline" target="_blank" rel="noopener">GitHub ↗</a></p></article>
+      <article class="proj"><p class="proj-tags">Machine learning · SAR · Floods</p><h3>Geospatial Foundation Models for SAR Flood Mapping</h3><p>Transfer learning with the Prithvi foundation model compared with UNet and SegFormer for mapping floods from SAR imagery (manuscript in preparation).</p><p class="proj-links"><a href="assets/reports/csce885.pdf" target="_blank" rel="noopener">Report (PDF)</a><a href="#talks">Talk ↓</a></p></article>
+      <article class="proj"><p class="proj-tags">GIS · Coastal hazards</p><h3>Coastal Vulnerability Dashboard</h3><p>Interactive dashboard and StoryMap for coastal vulnerability from South Carolina to the East Coast, using multi-criteria decision-making and probabilistic principal component analysis.</p><p class="proj-links"><a href="https://southcarolina.maps.arcgis.com/apps/dashboards/fc7eef0cb3b844dea1dbbb7500b5dffd" target="_blank" rel="noopener">Dashboard ↗</a><a href="https://storymaps.arcgis.com/stories/970c3abd8da8438192aabd3132bcb2b3" target="_blank" rel="noopener">StoryMap ↗</a></p></article>
+      <article class="proj"><p class="proj-tags">Earth Engine · Exposure</p><h3>NLCD Land Cover Analysis Tool</h3><p>Cloud-based tool that computes land cover shares (wetlands, forests, developed land and more) for states, counties or tracts in minutes instead of hours.</p><p class="proj-links"><a href="https://code.earthengine.google.com/607476fcfe540558f28579a6801d0b26" target="_blank" rel="noopener">Open tool ↗</a></p></article>
+    </div>
+
+    <h3 class="proj-group">Earlier projects</h3>
+    <p class="proj-group-intro">From my MSc at Politecnico di Milano and other work: earthquakes, landslides, risk assessment and statistics.</p>
+    <div class="proj-grid">
+      <article class="proj"><p class="proj-tags">ArcGIS Pro · WebGIS</p><h3>WebGIS for Seismic Shelter Planning</h3><p>Geospatial data processing to support seismic emergency management: choosing emergency shelter locations in Amatrice, Italy.</p><p class="proj-links"><a href="assets/reports/GPMReport.pdf" target="_blank" rel="noopener">Report (PDF)</a><a href="assets/reports/GPEMLight.pdf" target="_blank" rel="noopener">Slides (PDF)</a></p></article>
+      <article class="proj"><p class="proj-tags">Geology · Photogrammetry · Geophysics</p><h3>Shallow Landslide Risk Assessment</h3><p>Geo-engineering techniques for unstable slopes: geological, photogrammetric and geophysical methods applied to a shallow landslide simulator experiment.</p><p class="proj-links"><a href="assets/reports/GETUSpdf.pdf" target="_blank" rel="noopener">Report (PDF)</a><a href="#talks">Talk ↓</a></p></article>
+      <article class="proj"><p class="proj-tags">Risk assessment</p><h3>Garfagnana Valley Risk Assessment</h3><p>Systematic assessment of hazards, vulnerability and exposure for a whole valley in Tuscany.</p><p class="proj-links"><a href="assets/reports/garfananaProject.pdf" target="_blank" rel="noopener">Report (PDF)</a></p></article>
+      <article class="proj"><p class="proj-tags">Streamlit · Statistics</p><h3>Interactive Distribution Playground</h3><p>Web app for exploring probability distributions in real time: adjust parameters, compare distributions and see the mathematics behind them.</p><p class="proj-links"><a href="https://distributionplaygroundpy-lrxuyld3rdswjs4ucblhxn.streamlit.app/" target="_blank" rel="noopener">Live app ↗</a><a href="https://youtu.be/p3gCAjmaiPU" target="_blank" rel="noopener">Demo video ↗</a></p></article>
     </div>
   </section>
 
   <section class="block wrap" id="talks">
-    <h2>Talks</h2>
+    <h2>Presentations</h2>
+    <p class="intro">Recorded talks, newest first. Click a video to play it here.</p>
+    <div class="vid-grid" id="vidGrid"></div>
+    <h3 class="proj-group">Posters and other talks</h3>
     <ul class="talks">
-      <li><span class="yr">Jan 2025</span><div><a href="https://youtu.be/B2mcQwOKGIg" target="_blank" rel="noopener">Transfer learning in remote sensing: CSCE 885 and GEOG 755 project</a><p>University of South Carolina</p></div></li>
-      <li><span class="yr">Dec 2024</span><div><a href="https://youtu.be/V2PTMmq3l-k" target="_blank" rel="noopener">Introduction to Google Earth Engine</a><p>University of South Carolina</p></div></li>
-      <li><span class="yr">Nov 2024</span><div><a href="https://youtu.be/-nvML6FCT6Q" target="_blank" rel="noopener">SafeGuard.ai: IBM Call for Code pitch</a><p>University of South Carolina · 3rd place among 100+ students statewide</p></div></li>
-      <li><span class="yr">Oct 2024</span><div><a href="https://youtu.be/dJ07ccRr4yk" target="_blank" rel="noopener">Coastal risk and vulnerability</a><p>SCARC 2024 conference, South Carolina · oral session</p></div></li>
-      <li><span class="yr">May 2024</span><div><a href="https://youtu.be/Iwni2b6RGhs" target="_blank" rel="noopener">Deep learning and remote sensing in disaster management: MSc thesis defense</a><p>Politecnico di Milano</p></div></li>
-      <li><span class="yr">Feb 2023</span><div><a href="https://youtu.be/wirIVdNAxLg" target="_blank" rel="noopener">Landslide risk and geo-engineering techniques for unstable slopes</a><p>Politecnico di Milano</p></div></li>
+      <li><span class="yr">2024</span><div><span class="tt">Advancing Camera-Based Monitoring for Operational Hydrologic Applications</span><p>AGU Fall Meeting 2024 · poster</p></div></li>
+      <li><span class="yr">2024</span><div><span class="tt">Harnessing Heterogeneous Sources of Data and Artificial Intelligence for Hydrologic Monitoring</span><p>EGU General Assembly 2024 · poster</p></div></li>
+      <li><span class="yr">2024</span><div><span class="tt">Integrated Socio-Environmental Vulnerability Assessment of Coastal Hazards Using Data-Driven and Multi-Criteria Analysis Approaches</span><p>GIS Day MicroConference, University of South Carolina</p></div></li>
+      <li><span class="yr">2024</span><div><span class="tt">Vulnerability assessment of transportation infrastructure with ATLAS15 and machine learning</span><p>SCDOT Research and Innovation 2024 · pitch</p></div></li>
     </ul>
   </section>
 
@@ -939,6 +969,29 @@ async function setDataset(key){
   S.dirty=true;
   Object.values(LAYERS).flatMap(L=>L.needs).forEach(n=>loadLayer(n).catch(()=>{}));  // the rest in the background
 }
+
+/* ---------- presentations: YouTube thumbnails that become the player on click ---------- */
+const TALKS=[
+  {id:"XMZxnqovWe4", date:"Jan 2025", title:"Transfer learning with the Prithvi geospatial foundation model", venue:"CSCE 883 and GEOG 755 project, University of South Carolina"},
+  {id:"B2mcQwOKGIg", date:"Dec 2024", title:"Introduction to Google Earth Engine", venue:"Lecture for GEOG 755, University of South Carolina"},
+  {id:"V2PTMmq3l-k", date:"Nov 2024", title:"SafeGuard.ai: IBM Call for Code pitch", venue:"University of South Carolina · 3rd place among 100+ students statewide"},
+  {id:"-nvML6FCT6Q", date:"Oct 2024", title:"Mapping Risk: Coastal Vulnerability from South Carolina to the East Coast", venue:"SCARC 2024 conference · oral session"},
+  {id:"dJ07ccRr4yk", date:"May 2024", title:"Deep learning and remote sensing in disaster management", venue:"MSc thesis defense, Politecnico di Milano"},
+  {id:"Iwni2b6RGhs", date:"Feb 2023", title:"Geo-engineering techniques for unstable slopes", venue:"Course project, Politecnico di Milano"},
+  {id:"wirIVdNAxLg", date:"Jan 2022", title:"Tools for risk management", venue:"Course project, Politecnico di Milano"}
+];
+$("vidGrid").innerHTML=TALKS.map(t=>`<figure class="vid">
+    <div class="vid-frame"><button type="button" data-id="${t.id}" aria-label="Play: ${Writing.esc(t.title)}">
+      <img src="https://i.ytimg.com/vi/${t.id}/hqdefault.jpg" alt="" loading="lazy"><span class="vid-play"></span></button></div>
+    <figcaption><p class="vt">${Writing.esc(t.title)}</p><p class="vm">${t.date} · ${Writing.esc(t.venue)}</p></figcaption>
+  </figure>`).join("");
+$("vidGrid").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-id]"); if (!b) return;
+  const f=document.createElement("iframe");
+  f.src=`https://www.youtube-nocookie.com/embed/${b.dataset.id}?autoplay=1&rel=0`;
+  f.title=b.getAttribute("aria-label").replace(/^Play: /,""); f.allow="autoplay; encrypted-media; picture-in-picture; fullscreen"; f.allowFullscreen=true;
+  b.replaceWith(f);
+});
 
 /* ---------- writing and LinkedIn sections ---------- */
 Writing.load().then(items=>{ $("writingMag").innerHTML=Writing.magazine(items); })
