@@ -45,7 +45,7 @@ jobs:
         run: |
           mkdir _site
           cp *.html _site/
-          cp -r data articles assets _site/
+          cp -r data articles assets tools _site/
 
       - uses: actions/upload-pages-artifact@v3
         with:
