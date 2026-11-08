@@ -174,6 +174,16 @@ section.block{padding:80px 28px 8px}
 .talks a,.talks .tt{font:600 1.05rem/1.35 var(--serif)}
 .proj-group{font:600 1.25rem/1.3 var(--serif);margin:34px 0 4px;color:var(--ink)}
 .proj-group-intro{margin:0 0 16px;color:var(--muted);font-size:.95rem}
+.tool-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 20px;border-bottom:1px solid var(--line)}
+.tool-tabs button{border:0;background:none;cursor:pointer;padding:10px 14px 11px;font:500 .95rem var(--sans);color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tool-tabs button:hover{color:var(--ink)}
+.tool-tabs button[aria-selected="true"]{color:var(--ink);font-weight:600;border-bottom-color:var(--accent)}
+.tool-tabs button span{display:inline-block;min-width:1.4em;margin-left:6px;padding:0 6px;border-radius:999px;font-size:.75rem;line-height:1.5;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+.tool-panel[hidden]{display:none}
+.proj.has-img{padding-top:0;overflow:hidden}
+.proj-img{display:block;margin:0 -20px 14px;background:#121820}
+.proj-img img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:left center;transition:transform .5s}
+.proj-img:hover img{transform:scale(1.02)}
 .proj.feature{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:color-mix(in srgb,var(--accent) 6%,var(--panel))}
 .vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
 .vid{margin:0}
@@ -391,8 +401,14 @@ if (location.protocol === "file:") addEventListener("DOMContentLoaded", () => {
     <h2>Tools and projects</h2>
     <p class="intro">Software, datasets and reports I have built. More are listed in the <a href="https://www.linkedin.com/in/hatamimatt/details/projects/" target="_blank" rel="noopener">projects section of my LinkedIn profile</a>.</p>
 
-    <h3 class="proj-group">Climate extremes: tools and datasets</h3>
-    <p class="proj-group-intro">What I am building now, for understanding and assessing hydroclimate extremes and their risks.</p>
+    <div class="tool-tabs" role="tablist" aria-label="Tool categories">
+      <button type="button" role="tab" id="tab-climate" aria-controls="tools-climate" aria-selected="true">Climate extremes <span>7</span></button>
+      <button type="button" role="tab" id="tab-learning" aria-controls="tools-learning" aria-selected="false" tabindex="-1">Learning journey <span>1</span></button>
+      <button type="button" role="tab" id="tab-earlier" aria-controls="tools-earlier" aria-selected="false" tabindex="-1">Earlier projects <span>4</span></button>
+    </div>
+
+    <div class="tool-panel" role="tabpanel" id="tools-climate" aria-labelledby="tab-climate">
+    <p class="proj-group-intro">Tools and datasets I am building now, for understanding and assessing hydroclimate extremes and their risks.</p>
     <div class="proj-grid">
       <article class="proj feature"><p class="proj-tags">Interactive · GFS · ERA5</p><h3>Atmosphere-behind-extreme-rain globe</h3><p>The globe on this site: the last five days of vapor transport, moisture, wind and rain from NOAA's GFS analyses, refreshed every six hours, with past events such as Hurricane Helene to replay.</p><p class="proj-links"><a href="#top">Open the globe ↑</a></p></article>
       <article class="proj feature"><p class="proj-tags">Interactive · ERA5 · Forecast verification</p><h3>Hurricane Helene case study</h3><p>An hour-by-hour replay of the winds, moisture and rain behind Helene's inland flooding, and a look at which ingredients were already unusual weeks before landfall and what the forecasts said.</p><p class="proj-links"><a href="helene_viewer.html">Replay</a><a href="before_helene.html">Before Helene</a></p></article>
@@ -403,13 +419,23 @@ if (location.protocol === "file:") addEventListener("DOMContentLoaded", () => {
       <article class="proj"><p class="proj-tags">Earth Engine · Exposure</p><h3>NLCD Land Cover Analysis Tool</h3><p>Cloud-based tool that computes land cover shares (wetlands, forests, developed land and more) for states, counties or tracts in minutes instead of hours.</p><p class="proj-links"><a href="https://code.earthengine.google.com/607476fcfe540558f28579a6801d0b26" target="_blank" rel="noopener">Open tool ↗</a></p></article>
     </div>
 
-    <h3 class="proj-group">Earlier projects</h3>
+    </div>
+
+    <div class="tool-panel" role="tabpanel" id="tools-learning" aria-labelledby="tab-learning" hidden>
+    <p class="proj-group-intro">Interactive explainers I build as I learn: each one turns a concept from atmospheric dynamics or climate science into something you can explore.</p>
+    <div class="proj-grid">
+      <article class="proj has-img"><a class="proj-img" href="tools/wind-cells-atlas.html"><img src="assets/tools/wind-cells-atlas.jpg" alt="The atlas: a globe with wind belts and circulation cells beside a vertical cross-section of the troposphere with the jet streams" loading="lazy"></a><p class="proj-tags">Interactive · Atmospheric dynamics</p><h3>Global Wind Cells and Jet Streams Atlas</h3><p>Two synchronized views of the general circulation: a globe with the Hadley, Ferrel and polar cells and their surface winds, and a vertical cross-section from the equator to the pole with the stepped tropopause and both jet streams. Shift the seasons, make the jets wavier, and probe any latitude.</p><p class="proj-links"><a href="tools/wind-cells-atlas.html">Open the atlas →</a></p></article>
+    </div>
+    </div>
+
+    <div class="tool-panel" role="tabpanel" id="tools-earlier" aria-labelledby="tab-earlier" hidden>
     <p class="proj-group-intro">From my MSc at Politecnico di Milano and other work: earthquakes, landslides, risk assessment and statistics.</p>
     <div class="proj-grid">
       <article class="proj"><p class="proj-tags">ArcGIS Pro · WebGIS</p><h3>WebGIS for Seismic Shelter Planning</h3><p>Geospatial data processing to support seismic emergency management: choosing emergency shelter locations in Amatrice, Italy.</p><p class="proj-links"><a href="assets/reports/GPMReport.pdf" target="_blank" rel="noopener">Report (PDF)</a><a href="assets/reports/GPEMLight.pdf" target="_blank" rel="noopener">Slides (PDF)</a></p></article>
       <article class="proj"><p class="proj-tags">Geology · Photogrammetry · Geophysics</p><h3>Shallow Landslide Risk Assessment</h3><p>Geo-engineering techniques for unstable slopes: geological, photogrammetric and geophysical methods applied to a shallow landslide simulator experiment.</p><p class="proj-links"><a href="assets/reports/GETUSpdf.pdf" target="_blank" rel="noopener">Report (PDF)</a><a href="#talks">Talk ↓</a></p></article>
       <article class="proj"><p class="proj-tags">Risk assessment</p><h3>Garfagnana Valley Risk Assessment</h3><p>Systematic assessment of hazards, vulnerability and exposure for a whole valley in Tuscany.</p><p class="proj-links"><a href="assets/reports/garfananaProject.pdf" target="_blank" rel="noopener">Report (PDF)</a></p></article>
       <article class="proj"><p class="proj-tags">Streamlit · Statistics</p><h3>Interactive Distribution Playground</h3><p>Web app for exploring probability distributions in real time: adjust parameters, compare distributions and see the mathematics behind them.</p><p class="proj-links"><a href="https://distributionplaygroundpy-lrxuyld3rdswjs4ucblhxn.streamlit.app/" target="_blank" rel="noopener">Live app ↗</a><a href="https://youtu.be/p3gCAjmaiPU" target="_blank" rel="noopener">Demo video ↗</a></p></article>
+    </div>
     </div>
   </section>
 
@@ -969,6 +995,23 @@ async function setDataset(key){
   S.dirty=true;
   Object.values(LAYERS).flatMap(L=>L.needs).forEach(n=>loadLayer(n).catch(()=>{}));  // the rest in the background
 }
+
+/* ---------- tool categories as tabs; #tools-<name> in the address opens that tab ---------- */
+(()=>{
+  const tabs=[...document.querySelectorAll('.tool-tabs [role="tab"]')];
+  const show=(t,focus)=>{
+    tabs.forEach(b=>{ const on=b===t; b.setAttribute("aria-selected",String(on)); b.tabIndex=on?0:-1; $(b.getAttribute("aria-controls")).hidden=!on; });
+    if (focus) t.focus();
+  };
+  tabs.forEach((t,i)=>{
+    t.onclick=()=>{ show(t); history.replaceState(null,"","#"+t.getAttribute("aria-controls")); };
+    t.onkeydown=e=>{ const d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0; if (d){ e.preventDefault(); show(tabs[(i+d+tabs.length)%tabs.length],true); } };
+  });
+  // content above (writing, LinkedIn) loads later and moves the section, so scroll again once everything has loaded
+  const fromHash=()=>{ const t=tabs.find(b=>"#"+b.getAttribute("aria-controls")===location.hash); if (t){ show(t); $("projects").scrollIntoView(); } return !!t; };
+  addEventListener("hashchange",fromHash);
+  if (fromHash()) addEventListener("load",()=>setTimeout(()=>$("projects").scrollIntoView(),300),{once:true});
+})();
 
 /* ---------- presentations: YouTube thumbnails that become the player on click ---------- */
 const TALKS=[

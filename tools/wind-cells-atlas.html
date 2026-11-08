@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synchronized Global Winds, Cells & Jet Streams Atlas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Architects+Daughter&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                        chalk: ['Architects Daughter', 'cursive', 'sans-serif'],
+                    },
+                    colors: {
+                        chalkboard: {
+                            950: '#121820',
+                            900: '#1c2430',
+                            800: '#263142',
+                            700: '#334155',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #121820;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(251, 191, 36, 0.04) 0%, transparent 50%);
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        .chalk-panel {
+            background: rgba(28, 36, 48, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+        }
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #121820;
+            border-radius: 999px;
+            border: 1px solid #475569;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: #38bdf8;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+            transition: transform 0.15s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: #7dd3fc;
+        }
+        .feature-chip {
+            transition: all 0.2s ease;
+        }
+        .feature-chip.active {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.18);
+            color: #ffffff;
+            box-shadow: 0 0 15px -3px rgba(56, 189, 248, 0.4);
+        }
+        canvas {
+            display: block;
+            touch-action: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased selection:bg-sky-500 selection:text-white">
+
+    <!-- Top Header & Quick Feature Selector -->
+    <header class="chalk-panel sticky top-0 z-30 border-b border-slate-700/70 px-4 lg:px-6 py-3">
+        <div class="max-w-[1700px] mx-auto flex flex-col xl:flex-row items-center justify-between gap-3">
+            <!-- Brand Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-sky-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                    <i class="ph-bold ph-wind text-2xl text-slate-950"></i>
+                </div>
+                <div>
+                    <a href="../index.html#tools-learning" class="text-[11px] text-slate-400 hover:text-sky-300 transition-colors">← Matt Hatami · Tools</a>
+                    <h1 class="text-lg md:text-xl font-bold tracking-tight text-white flex items-center gap-2.5">
+                        GLOBAL WIND CELLS & JET STREAMS ATLAS
+                        <span class="text-xs font-mono uppercase px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-400/30">Dual Synchronized Lab</span>
+                    </h1>
+                    <p class="text-xs text-slate-300">Hover or click any cell, wind belt, or jet stream on either diagram to synchronize both views in real time</p>
+                </div>
+            </div>
+
+            <!-- Interactive Feature Pills (Synchronized Selectors) -->
+            <div class="flex flex-wrap items-center justify-center gap-1.5">
+                <button onclick="selectFeature('all')" id="chip-all" class="feature-chip active px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-600 bg-slate-800/80 text-slate-200">
+                    All Systems
+                </button>
+                <button onclick="selectFeature('hadley')" id="chip-hadley" class="feature-chip px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 bg-slate-900/70 text-amber-300 hover:border-amber-400/60 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span> Hadley Cell & Trades
+                </button>
+                <button onclick="selectFeature('ferrel')" id="chip-ferrel" class="feature-chip px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 bg-slate-900/70 text-emerald-300 hover:border-emerald-400/60 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Ferrel Cell & Westerlies
+                </button>
+                <button onclick="selectFeature('polar')" id="chip-polar" class="feature-chip px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 bg-slate-900/70 text-sky-300 hover:border-sky-400/60 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-sky-400"></span> Polar Cell & Easterlies
+                </button>
+                <button onclick="selectFeature('stj')" id="chip-stj" class="feature-chip px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 bg-slate-900/70 text-yellow-300 hover:border-yellow-400/60 flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full border-2 border-yellow-300 bg-yellow-500/40"></span> Subtropical Jet (30°N)
+                </button>
+                <button onclick="selectFeature('pfj')" id="chip-pfj" class="feature-chip px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 bg-slate-900/70 text-cyan-300 hover:border-cyan-400/60 flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full border-2 border-cyan-300 bg-cyan-500/40"></span> Polar Jet & Front (60°N)
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Synchronized Dual Canvas Workspace -->
+    <main class="flex-1 max-w-[1700px] w-full mx-auto p-3 sm:p-5 flex flex-col gap-4">
+
+        <!-- Control Bar: Latitude Probe, Season/Rossby Waves, Speed & Layer Toggles -->
+        <section class="chalk-panel rounded-2xl p-3.5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 items-center">
+
+            <!-- Play/Pause & Speed -->
+            <div class="xl:col-span-2 flex items-center gap-2">
+                <button id="btn-play" onclick="togglePlay()" class="px-3.5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-md transition-all">
+                    <i id="icon-play" class="ph-fill ph-pause text-base"></i>
+                    <span id="label-play">Pause</span>
+                </button>
+                <div class="flex-1">
+                    <div class="flex justify-between text-[11px] text-slate-300 mb-1">
+                        <span>Flow Speed</span>
+                        <span id="val-speed" class="font-mono text-sky-400">1.0x</span>
+                    </div>
+                    <input type="range" id="slider-speed" min="0.2" max="2.5" step="0.1" value="1.0" oninput="updateControls()">
+                </div>
+            </div>
+
+            <!-- Synchronized Latitude Probe Slider -->
+            <div class="xl:col-span-4 bg-slate-900/80 border border-slate-700/80 rounded-xl px-3.5 py-2">
+                <div class="flex justify-between items-center text-xs mb-1">
+                    <span class="text-slate-200 font-semibold flex items-center gap-1.5">
+                        <i class="ph-bold ph-crosshair text-amber-400"></i>
+                        Linked Latitude Probe (Drag here or on canvases):
+                    </span>
+                    <span id="val-probe-lat" class="font-mono font-bold text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30">
+                        30.0° N (Subtropical Ridge)
+                    </span>
+                </div>
+                <input type="range" id="slider-probe" min="0" max="90" step="0.5" value="30" oninput="setProbeLatitude(this.value)">
+                <div class="flex justify-between text-[10px] font-mono text-slate-400 mt-0.5">
+                    <span>0° Equator (ITCZ)</span>
+                    <span>30°N Subtropical High</span>
+                    <span>60°N Polar Front</span>
+                    <span>90°N Pole</span>
+                </div>
+            </div>
+
+            <!-- Seasonal Shift & Rossby Wave Meander -->
+            <div class="xl:col-span-3 bg-slate-900/80 border border-slate-700/80 rounded-xl px-3.5 py-2 grid grid-cols-2 gap-3">
+                <div>
+                    <div class="flex justify-between text-[11px] text-slate-300 mb-1">
+                        <span>Season Shift</span>
+                        <span id="val-season" class="font-mono text-emerald-400">Equinox</span>
+                    </div>
+                    <input type="range" id="slider-season" min="-1" max="1" step="0.1" value="0" oninput="updateControls()">
+                    <div class="flex justify-between text-[9px] text-slate-400 mt-0.5">
+                        <span>NH Winter</span>
+                        <span>Equinox</span>
+                        <span>NH Summer</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-[11px] text-slate-300 mb-1">
+                        <span>Jet Waves</span>
+                        <span id="val-waviness" class="font-mono text-cyan-400">Moderate</span>
+                    </div>
+                    <input type="range" id="slider-waviness" min="0" max="2" step="0.1" value="1.0" oninput="updateControls()">
+                    <div class="flex justify-between text-[9px] text-slate-400 mt-0.5">
+                        <span>Zonal</span>
+                        <span>Rossby Waves</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layer Visibility Checkboxes -->
+            <div class="xl:col-span-3 flex flex-wrap items-center justify-end gap-2 text-xs">
+                <label class="flex items-center gap-1.5 bg-slate-900/75 border border-slate-700 px-2.5 py-1.5 rounded-lg cursor-pointer hover:border-slate-500">
+                    <input type="checkbox" id="chk-surface" checked onchange="updateControls()" class="accent-amber-400 rounded">
+                    <span class="text-slate-200">Surface Winds</span>
+                </label>
+                <label class="flex items-center gap-1.5 bg-slate-900/75 border border-slate-700 px-2.5 py-1.5 rounded-lg cursor-pointer hover:border-slate-500">
+                    <input type="checkbox" id="chk-cells" checked onchange="updateControls()" class="accent-emerald-400 rounded">
+                    <span class="text-slate-200">3D Cell Loops</span>
+                </label>
+                <label class="flex items-center gap-1.5 bg-slate-900/75 border border-slate-700 px-2.5 py-1.5 rounded-lg cursor-pointer hover:border-slate-500">
+                    <input type="checkbox" id="chk-jets" checked onchange="updateControls()" class="accent-cyan-400 rounded">
+                    <span class="text-slate-200">Jet Streams</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- SIDE-BY-SIDE DUAL SYNCHRONIZED CANVASES -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+
+            <!-- LEFT PANEL: Global Wind Patterns, Cells & Jet Streams (Planetary View) -->
+            <div class="lg:col-span-6 chalk-panel rounded-2xl p-3 flex flex-col justify-between relative overflow-hidden group">
+                <!-- Panel Title Banner -->
+                <div class="flex flex-wrap items-center justify-between border-b border-slate-700/80 pb-2.5 mb-2 px-1 gap-2">
+                    <div>
+                        <span id="globe-view-subtitle" class="text-[11px] font-mono uppercase tracking-wider text-amber-400 block">Panel 1 • Interactive 3D Planetary View (Drag horizontally to rotate!)</span>
+                        <h2 class="text-base sm:text-lg font-bold text-white tracking-wide">GLOBAL WIND PATTERNS & 3D SIDE CUTAWAY</h2>
+                    </div>
+                    <!-- 3D Camera Rotation Controls (Works while Paused!) -->
+                    <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-700 px-2.5 py-1.5 rounded-xl">
+                        <button id="btn-view-front" onclick="animateGlobeRotation(0)" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-500 text-slate-950 transition-all">
+                            Front Map (0°)
+                        </button>
+                        <input type="range" id="slider-globe-rot" min="0" max="1" step="0.01" value="0" oninput="setGlobeRotation(this.value)" class="w-20 sm:w-24" title="Rotate Globe from Front View to 90° Side Cutaway">
+                        <button id="btn-view-side" onclick="animateGlobeRotation(1)" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-amber-300 border border-amber-400/40 hover:bg-amber-500/20 transition-all flex items-center gap-1">
+                            <i class="ph-bold ph-cube"></i> 90° Side View
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Canvas Container -->
+                <div class="relative w-full aspect-[4/3] min-h-[420px] bg-[#161e29] rounded-xl border border-slate-700/60 overflow-hidden">
+                    <canvas id="globe-canvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+                </div>
+
+                <!-- Bottom Mini Legend for Left Panel -->
+                <div class="mt-2.5 pt-2 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-300 px-1">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-1 rounded bg-amber-300"></span> Trade Winds</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-1 rounded bg-orange-400"></span> Westerlies</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-1 rounded bg-sky-400"></span> Polar Easterlies</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center gap-1 text-yellow-300 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-yellow-400 inline-block"></span> Subtropical Jet</span>
+                        <span class="flex items-center gap-1 text-cyan-300 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block"></span> Polar Jet</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: Altitude & Path of Jet Streams in the Troposphere (Vertical Cross-Section) -->
+            <div class="lg:col-span-6 chalk-panel rounded-2xl p-3 flex flex-col justify-between relative overflow-hidden">
+                <!-- Panel Title Banner -->
+                <div class="flex items-center justify-between border-b border-slate-700/80 pb-2.5 mb-2 px-1">
+                    <div>
+                        <span class="text-[11px] font-mono uppercase tracking-wider text-cyan-400 block">Panel 2 • Vertical Cross-Section (0° to 90°N)</span>
+                        <h2 class="text-base sm:text-lg font-bold text-white tracking-wide">ALTITUDE OF CELLS, TROPOPAUSE & JETS</h2>
+                    </div>
+                    <div class="text-right text-[11px] text-slate-400 font-mono">
+                        <div>Y-Axis: 0–18 km (0–12 mi)</div>
+                        <div>Jets: Flowing Into Page (W→E)</div>
+                    </div>
+                </div>
+
+                <!-- Canvas Container -->
+                <div class="relative w-full aspect-[4/3] min-h-[420px] bg-[#161e29] rounded-xl border border-slate-700/60 overflow-hidden">
+                    <canvas id="profile-canvas" class="w-full h-full cursor-pointer"></canvas>
+                </div>
+
+                <!-- Bottom Mini Legend for Right Panel -->
+                <div class="mt-2.5 pt-2 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-300 px-1">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="flex items-center gap-1.5"><span class="w-4 border-b-2 border-dashed border-slate-300 inline-block"></span> Stepped Tropopause</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-2 rounded-sm bg-rose-400/80 inline-block"></span> Warm Rising Air</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-2 rounded-sm bg-sky-400/80 inline-block"></span> Cold Sinking Air</span>
+                    </div>
+                    <span class="text-[11px] font-mono text-amber-300">Click any cell or jet core to lock focus</span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- BOTTOM SYNCHRONIZED TELEMETRY & CONCEPT EXPLAINER CARD -->
+        <section class="chalk-panel rounded-2xl p-4 sm:p-5 border-l-4 border-l-sky-400 grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+
+            <!-- Left 7 Cols: Active Feature Explanation -->
+            <div class="lg:col-span-7 space-y-2">
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <span id="info-badge" class="px-2.5 py-0.5 rounded-md text-xs font-mono font-bold uppercase bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                        Synchronized Overview
+                    </span>
+                    <h3 id="info-title" class="text-base sm:text-lg font-bold text-white">
+                        How Planetary Winds Connect to Vertical Tropospheric Depth
+                    </h3>
+                </div>
+                <p id="info-desc" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    Look at both panels together: on the <strong>Left Globe</strong>, surface winds curve due to the Coriolis effect (Trade Winds, Westerlies, Polar Easterlies). On the <strong>Right Vertical Profile</strong>, you are slicing the Northern Hemisphere atmosphere from the Equator ($0^\circ$) to the North Pole ($90^\circ\text{N}$) up to $18\text{ km}$. Notice how the <strong>Tropopause steps downward</strong> from $17\text{ km}$ at the Equator to $9\text{ km}$ at the Pole, and the two <strong>Jet Streams</strong> sit wedged right inside those altitude steps!
+                </p>
+            </div>
+
+            <!-- Right 5 Cols: Live Probe Atmospheric Column Readout -->
+            <div class="lg:col-span-5 bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div class="border-r border-slate-800 pr-2">
+                    <span class="text-slate-400 block text-[11px]">Probe Latitude</span>
+                    <span id="readout-lat" class="font-mono font-bold text-sm text-amber-300">30.0° N</span>
+                    <span id="readout-cell" class="text-[10px] text-slate-400 block mt-0.5">Hadley / Ferrel Edge</span>
+                </div>
+                <div class="border-r border-slate-800 pr-2">
+                    <span class="text-slate-400 block text-[11px]">Tropopause Ceiling</span>
+                    <span id="readout-tropo" class="font-mono font-bold text-sm text-sky-300">13.8 km</span>
+                    <span id="readout-tropo-mi" class="text-[10px] text-slate-400 block mt-0.5">~8.6 miles high</span>
+                </div>
+                <div class="border-r border-slate-800 pr-2">
+                    <span class="text-slate-400 block text-[11px]">Surface Wind (0–2 km)</span>
+                    <span id="readout-surf" class="font-mono font-bold text-sm text-emerald-300">Subtropical High</span>
+                    <span id="readout-surf-dir" class="text-[10px] text-slate-400 block mt-0.5">Calm / Diverging</span>
+                </div>
+                <div>
+                    <span class="text-slate-400 block text-[11px]">Upper Troposphere</span>
+                    <span id="readout-upper" class="font-mono font-bold text-sm text-yellow-300">Subtropical Jet</span>
+                    <span id="readout-upper-spd" class="text-[10px] text-slate-400 block mt-0.5">W→E @ ~140 kt</span>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Synchronized Simulation Script -->
+    <script>
+        /***********************************************************************
+         * STATE & EDUCATIONAL DATA DICTIONARY
+         ***********************************************************************/
+        const state = {
+            isPlaying: true,
+            speed: 1.0,
+            time: 0,
+            selectedFeature: 'all', // 'all' | 'hadley' | 'ferrel' | 'polar' | 'stj' | 'pfj'
+            hoveredFeature: null,
+            probeLat: 30.0,         // 0 to 90 degrees North
+            seasonShift: 0.0,       // -1 (Winter) to +1 (Summer) -> shifts cells by ±5 degrees
+            waviness: 1.0,          // 0 to 2 -> Rossby wave amplitude
+            showSurface: true,
+            showCells: true,
+            showJets: true,
+            isDraggingProbe: false,
+            globeRot: 0.0,          // 0.0 = Front Map View (East->West = Leftward), 1.0 = 90° Side Limb View (Upward 3D lofting!)
+            targetGlobeRot: null,
+            isDraggingGlobeRot: false,
+            dragStartX: 0,
+            dragStartRot: 0
+        };
+
+        const FEATURE_INFO = {
+            all: {
+                badge: 'Synchronized Overview',
+                title: 'How Planetary Winds Connect to Vertical Tropospheric Depth',
+                desc: 'Look at both panels together: on the <strong>Left Globe</strong>, surface winds curve due to the Coriolis effect (Trade Winds, Westerlies, Polar Easterlies)—click <strong>90° Side View</strong> to rotate the globe and see the warm moist equatorial air rise straight up! On the <strong>Right Vertical Profile</strong>, notice how the <strong>Tropopause steps downward</strong> from 17 km at the Equator to 9 km at the Pole, and how every cell flips between Surface and Upper-Level pressure!'
+            },
+            hadley: {
+                badge: '0° to 30° • Tropical Engine',
+                title: 'Hadley Cell, Trade Winds & The Vertical Pressure Flip',
+                desc: 'At the Equator (0°), intense solar heating makes warm moist air rise, creating a <strong>Surface Low (L)</strong>. As it climbs to 17 km, it cools and <strong>rains out almost 100% of its moisture</strong>! Piling up against the tropopause ceiling creates an <strong>Upper-Level High (H Aloft)</strong> that pushes bone-dry air toward 30°N/S, where it sinks into the <strong>30° Surface High</strong> and returns to 0° as the <strong>Trade Winds</strong>.'
+            },
+            ferrel: {
+                badge: '30° to 60° • Mid-Latitude Gear',
+                title: 'Ferrel Cell & Prevailing Westerlies (10–12 km Troposphere)',
+                desc: 'Between 30° and 60°, part of the sinking subtropical air flows poleward along the surface and is deflected east by the Coriolis force, creating the <strong>Prevailing Westerlies</strong>. Aloft, the Ferrel cell acts like a mechanical ball-bearing driven by eddies between the Hadley and Polar cells.'
+            },
+            polar: {
+                badge: '60° to 90° • Frigid Cap',
+                title: 'Polar Cell & Polar Easterlies (Shallow 8–9 km Troposphere)',
+                desc: 'Over the cold Poles (90°), dense frigid air sinks from a low 8.5 km tropopause to create a <strong>Polar Surface High (H)</strong> and flows equatorward toward 60°. The Coriolis effect deflects this cold surface air westward into the <strong>Polar Easterlies</strong>, which clash with the warmer Westerlies at the 60° Polar Front.'
+            },
+            stj: {
+                badge: '~30°N • ~13 km Altitude (43,000 ft)',
+                title: 'Subtropical Jet Stream (Wedged in the 17 km → 12 km Tropopause Step)',
+                desc: 'As high-altitude air in the Hadley cell moves poleward from 0° to 30°N, conservation of angular momentum and the Coriolis force turn it completely eastward into the <strong>Subtropical Jet Stream</strong> right where the tropical tropopause drops down. Because air cannot continue north, it converges aloft and sinks into the 30° Subtropical High.'
+            },
+            pfj: {
+                badge: '~60°N • ~10 km Altitude (33,000 ft)',
+                title: 'Polar Front Jet Stream (Driven by the 60° Warm/Cold Boundary)',
+                desc: 'Wedged at ~10 km altitude above the sharp temperature boundary (<strong>Polar Front</strong>) between mild Ferrel cell air and frigid Polar air. The steep horizontal temperature gradient creates a powerful West-to-East river of wind (into the page on the right chart) that steers mid-latitude storms.'
+            }
+        };
+
+        const globeCanvas = document.getElementById('globe-canvas');
+        const globeCtx = globeCanvas.getContext('2d');
+        const profileCanvas = document.getElementById('profile-canvas');
+        const profileCtx = profileCanvas.getContext('2d');
+
+        /***********************************************************************
+         * UI CONTROLS & SYNCHRONIZATION LOGIC
+         ***********************************************************************/
+        function togglePlay() {
+            state.isPlaying = !state.isPlaying;
+            document.getElementById('icon-play').className = state.isPlaying ? 'ph-fill ph-pause text-base' : 'ph-fill ph-play text-base';
+            document.getElementById('label-play').textContent = state.isPlaying ? 'Pause' : 'Play';
+        }
+
+        function updateControls() {
+            state.speed = parseFloat(document.getElementById('slider-speed').value);
+            document.getElementById('val-speed').textContent = state.speed.toFixed(1) + 'x';
+
+            state.seasonShift = parseFloat(document.getElementById('slider-season').value);
+            const sLabel = state.seasonShift > 0.2 ? 'NH Summer (+5°N)' : (state.seasonShift < -0.2 ? 'NH Winter (-5°S)' : 'Equinox');
+            document.getElementById('val-season').textContent = sLabel;
+
+            state.waviness = parseFloat(document.getElementById('slider-waviness').value);
+            const wLabel = state.waviness < 0.4 ? 'Flat Zonal' : (state.waviness > 1.4 ? 'Strong Rossby' : 'Moderate');
+            document.getElementById('val-waviness').textContent = wLabel;
+
+            state.showSurface = document.getElementById('chk-surface').checked;
+            state.showCells = document.getElementById('chk-cells').checked;
+            state.showJets = document.getElementById('chk-jets').checked;
+
+            setProbeLatitude(state.probeLat);
+        }
+
+        function selectFeature(featureKey) {
+            state.selectedFeature = featureKey;
+            ['all', 'hadley', 'ferrel', 'polar', 'stj', 'pfj'].forEach(k => {
+                const btn = document.getElementById('chip-' + k);
+                if (btn) btn.classList.toggle('active', k === featureKey);
+            });
+
+            const shift = state.seasonShift * 5;
+            if (featureKey === 'hadley') setProbeLatitude(Math.max(0, 15 + shift));
+            if (featureKey === 'ferrel') setProbeLatitude(Math.min(90, 45 + shift));
+            if (featureKey === 'polar') setProbeLatitude(Math.min(90, 75 + shift * 0.5));
+            if (featureKey === 'stj') setProbeLatitude(Math.min(90, 30 + shift));
+            if (featureKey === 'pfj') setProbeLatitude(Math.min(90, 60 + shift));
+
+            updateInfoCard();
+        }
+
+        function updateInfoCard() {
+            const activeKey = state.hoveredFeature || state.selectedFeature || 'all';
+            const info = FEATURE_INFO[activeKey] || FEATURE_INFO.all;
+            document.getElementById('info-badge').textContent = info.badge;
+            document.getElementById('info-title').textContent = info.title;
+            document.getElementById('info-desc').innerHTML = info.desc;
+        }
+
+        function getTropopauseKm(latDeg, seasonShift) {
+            const s = seasonShift * 5;
+            const lat = latDeg - s;
+            const step1 = 1 / (1 + Math.exp((lat - 30) / 3.2));
+            const step2 = 1 / (1 + Math.exp((lat - 60) / 3.2));
+            return 8.5 + 3.2 * step2 + 5.3 * step1;
+        }
+
+        function setProbeLatitude(val) {
+            const lat = Math.max(0, Math.min(90, parseFloat(val)));
+            state.probeLat = lat;
+            document.getElementById('slider-probe').value = lat;
+
+            const s = state.seasonShift * 5;
+            const tropoKm = getTropopauseKm(lat, state.seasonShift);
+            const tropoMi = tropoKm * 0.621371;
+
+            let zoneName = '';
+            let cellName = '';
+            let surfWind = '';
+            let surfDir = '';
+            let upperFlow = '';
+            let upperSpd = '';
+
+            if (Math.abs(lat - (30 + s)) < 4) {
+                zoneName = 'Subtropical Ridge & Jet';
+                cellName = 'Hadley / Ferrel Boundary';
+                surfWind = 'Subtropical High (H)';
+                surfDir = 'Sinking Dry Air (Deserts)';
+                upperFlow = 'Subtropical Jet Core';
+                upperSpd = 'W→E @ ~130–150 kt (13 km)';
+            } else if (Math.abs(lat - (60 + s)) < 4) {
+                zoneName = 'Polar Front & Jet';
+                cellName = 'Ferrel / Polar Boundary';
+                surfWind = 'Subpolar Low (L)';
+                surfDir = 'Converging & Rising Storm Belt';
+                upperFlow = 'Polar Front Jet Core';
+                upperSpd = 'W→E @ ~160–200 kt (10 km)';
+            } else if (lat < 5 + Math.max(0, s)) {
+                zoneName = 'ITCZ (Doldrums)';
+                cellName = 'Hadley Rising Branch';
+                surfWind = 'Equatorial Low (L)';
+                surfDir = 'Warm Moist Uplift & Rain';
+                upperFlow = 'Upper-Level High (H Aloft)';
+                upperSpd = 'Dry Air Diverging Poleward (17 km)';
+            } else if (lat < 30 + s) {
+                zoneName = 'Tropical Trade Belt';
+                cellName = 'Hadley Cell (0°–30°N)';
+                surfWind = 'NE Trade Winds';
+                surfDir = 'Blowing NE → SW (0–2 km)';
+                upperFlow = 'Anti-Trades Return Flow';
+                upperSpd = 'Dry Air Moving SW → NE (14–16 km)';
+            } else if (lat < 60 + s) {
+                zoneName = 'Mid-Latitude Belt';
+                cellName = 'Ferrel Cell (30°–60°N)';
+                surfWind = 'Prevailing Westerlies';
+                surfDir = 'Blowing SW → NE (0–2 km)';
+                upperFlow = 'Mid-Lat Upper Westerlies';
+                upperSpd = 'W→E Flow (10–12 km)';
+            } else {
+                zoneName = 'Polar Cap';
+                cellName = 'Polar Cell (60°–90°N)';
+                surfWind = 'Polar Easterlies';
+                surfDir = 'Blowing NE → SW (0–2 km)';
+                upperFlow = 'Polar Return Flow';
+                upperSpd = 'Poleward Aloft (8–9 km)';
+            }
+
+            document.getElementById('val-probe-lat').textContent = `${lat.toFixed(1)}° N (${zoneName})`;
+            document.getElementById('readout-lat').textContent = `${lat.toFixed(1)}° N`;
+            document.getElementById('readout-cell').textContent = cellName;
+            document.getElementById('readout-tropo').textContent = `${tropoKm.toFixed(1)} km`;
+            document.getElementById('readout-tropo-mi').textContent = `~${tropoMi.toFixed(1)} miles high`;
+            document.getElementById('readout-surf').textContent = surfWind;
+            document.getElementById('readout-surf-dir').textContent = surfDir;
+            document.getElementById('readout-upper').textContent = upperFlow;
+            document.getElementById('readout-upper-spd').textContent = upperSpd;
+        }
+
+        function getActiveFeature() {
+            return state.hoveredFeature || state.selectedFeature || 'all';
+        }
+
+        function isHighlighted(featureKey) {
+            const active = getActiveFeature();
+            return active === 'all' || active === featureKey;
+        }
+
+        function setGlobeRotation(val) {
+            state.targetGlobeRot = null;
+            state.globeRot = Math.max(0, Math.min(1, parseFloat(val)));
+            syncGlobeRotationUI();
+        }
+
+        function animateGlobeRotation(targetVal) {
+            state.targetGlobeRot = targetVal;
+        }
+
+        function syncGlobeRotationUI() {
+            const slider = document.getElementById('slider-globe-rot');
+            if (slider) slider.value = state.globeRot;
+
+            const btnFront = document.getElementById('btn-view-front');
+            const btnSide = document.getElementById('btn-view-side');
+            const sub = document.getElementById('globe-view-subtitle');
+
+            if (state.globeRot > 0.5) {
+                btnSide.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-400 text-slate-950 shadow transition-all flex items-center gap-1';
+                btnFront.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition-all';
+                sub.textContent = 'Panel 1 • 90° Side Cutaway View (Seeing Equatorial Moist Air Rise Upward & Flip L → H Aloft!)';
+            } else {
+                btnFront.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-500 text-slate-950 shadow transition-all';
+                btnSide.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-amber-300 border border-amber-400/40 hover:bg-amber-500/20 transition-all flex items-center gap-1';
+                sub.textContent = 'Panel 1 • Front Map View (Click "90° Side View" or drag horizontally to rotate even when paused)';
+            }
+        }
+
+        /***********************************************************************
+         * LEFT PANEL: PLANETARY GLOBE & 3D ROTATABLE SIDE CUTAWAY
+         ***********************************************************************/
+        function drawGlobePanel() {
+            const w = globeCanvas.width;
+            const h = globeCanvas.height;
+            globeCtx.clearRect(0, 0, w, h);
+
+            const rot = state.globeRot; // 0 = Front View, 1 = 90° Side Cutaway View
+            const frontWeight = Math.max(0, 1 - rot * 1.15);
+            const sideWeight = Math.min(1, rot * 1.15);
+
+            // Smoothly shift Earth center slightly left when in 90° Side View to give plenty of room for the 3D Rising Plume on the right limb
+            const cx = w * (0.52 - rot * 0.14);
+            const cy = h * 0.51;
+            const R = Math.min(w, h) * 0.36; // Earth core radius
+            const seasonDeg = state.seasonShift * 5; // ±5 deg shift
+
+            // 1. Outer Atmosphere Halo
+            const atmGrad = globeCtx.createRadialGradient(cx, cy, R * 0.95, cx, cy, R * (1.25 + rot * 0.18));
+            atmGrad.addColorStop(0, 'rgba(56, 189, 248, 0.18)');
+            atmGrad.addColorStop(0.7, 'rgba(30, 58, 138, 0.08)');
+            atmGrad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+            globeCtx.fillStyle = atmGrad;
+            globeCtx.beginPath();
+            globeCtx.arc(cx, cy, R * (1.25 + rot * 0.18), 0, Math.PI * 2);
+            globeCtx.fill();
+
+            // 2. Earth Ocean Disc
+            const oceanGrad = globeCtx.createRadialGradient(cx - R * 0.25, cy - R * 0.25, R * 0.1, cx, cy, R);
+            oceanGrad.addColorStop(0, '#1e4268');
+            oceanGrad.addColorStop(0.7, '#152e4a');
+            oceanGrad.addColorStop(1, '#0d1e33');
+            globeCtx.fillStyle = oceanGrad;
+            globeCtx.beginPath();
+            globeCtx.arc(cx, cy, R, 0, Math.PI * 2);
+            globeCtx.fill();
+
+            // Subtle Stylized Continents (Clipped inside Earth circle, shifting horizontally as you rotate the globe!)
+            globeCtx.save();
+            globeCtx.beginPath();
+            globeCtx.arc(cx, cy, R, 0, Math.PI * 2);
+            globeCtx.clip();
+
+            const lonShift = -rot * R * 0.85;
+            globeCtx.fillStyle = 'rgba(54, 105, 72, 0.42)';
+            drawContinentBlob(globeCtx, cx - R * 0.48 + lonShift, cy - R * 0.42, R * 0.35, R * 0.28, -0.3);
+            drawContinentBlob(globeCtx, cx - R * 0.28 + lonShift, cy + R * 0.32, R * 0.22, R * 0.34, 0.2);
+            drawContinentBlob(globeCtx, cx + R * 0.38 + lonShift, cy - R * 0.38, R * 0.42, R * 0.26, 0.15);
+            drawContinentBlob(globeCtx, cx + R * 0.35 + lonShift, cy + R * 0.18, R * 0.28, R * 0.32, -0.1);
+            drawContinentBlob(globeCtx, cx + R * 1.15 + lonShift, cy - R * 0.25, R * 0.32, R * 0.28, -0.2);
+
+            // 3D Longitude Meridians to make the 3D rotation visually unmistakable even when paused
+            globeCtx.strokeStyle = 'rgba(148, 163, 184, 0.18)';
+            globeCtx.lineWidth = 1;
+            for (let m = -3; m <= 3; m++) {
+                const mFrac = ((m * 0.32 - rot * 0.9 + 2) % 2) - 1;
+                if (Math.abs(mFrac) < 0.98) {
+                    globeCtx.beginPath();
+                    globeCtx.ellipse(cx, cy, Math.max(1, Math.abs(mFrac) * R), R, 0, -Math.PI / 2, Math.PI / 2, mFrac < 0);
+                    globeCtx.stroke();
+                }
+            }
+
+            // 3. Latitude Lines (0°, 30°N/S, 60°N/S)
+            const lats = [
+                { deg: 0, label: '0° (Equator)', p: 'L' },
+                { deg: 30 + seasonDeg, label: '30°N', p: 'H' },
+                { deg: 60 + seasonDeg, label: '60°N', p: 'L' },
+                { deg: -30 + seasonDeg, label: '30°S', p: 'H' },
+                { deg: -60 + seasonDeg, label: '60°S', p: 'L' }
+            ];
+
+            lats.forEach(lat => {
+                const rad = (lat.deg * Math.PI) / 180;
+                const y = cy - Math.sin(rad) * R;
+                const halfChord = Math.cos(rad) * R;
+
+                globeCtx.strokeStyle = lat.deg === 0 ? 'rgba(226, 232, 240, 0.75)' : 'rgba(226, 232, 240, 0.45)';
+                globeCtx.lineWidth = lat.deg === 0 ? 2 : 1.3;
+                globeCtx.beginPath();
+                globeCtx.moveTo(cx - halfChord, y);
+                globeCtx.lineTo(cx + halfChord, y);
+                globeCtx.stroke();
+            });
+
+            // 4. Animated Surface Wind Curved Arrows (3D-projected as globe rotates!)
+            if (state.showSurface) {
+                drawSurfaceWindBand(globeCtx, cx, cy, R, 4 + seasonDeg, 26 + seasonDeg, 'tradeN', isHighlighted('hadley'), rot);
+                drawSurfaceWindBand(globeCtx, cx, cy, R, -26 + seasonDeg, -4 + seasonDeg, 'tradeS', isHighlighted('hadley'), rot);
+                drawSurfaceWindBand(globeCtx, cx, cy, R, 34 + seasonDeg, 56 + seasonDeg, 'westN', isHighlighted('ferrel'), rot);
+                drawSurfaceWindBand(globeCtx, cx, cy, R, -56 + seasonDeg, -34 + seasonDeg, 'westS', isHighlighted('ferrel'), rot);
+                drawSurfaceWindBand(globeCtx, cx, cy, R, 64 + seasonDeg, 84, 'polarN', isHighlighted('polar'), rot);
+                drawSurfaceWindBand(globeCtx, cx, cy, R, -84, -64 + seasonDeg, 'polarS', isHighlighted('polar'), rot);
+            }
+
+            // 5. Animated Upper-Troposphere Jet Stream Wavy Ribbons (~30° & ~60°)
+            if (state.showJets && frontWeight > 0.05) {
+                globeCtx.save();
+                globeCtx.globalAlpha = frontWeight;
+                drawJetRibbonOnGlobe(globeCtx, cx, cy, R, 30 + seasonDeg, '#facc15', 'SUBTROPICAL JET', isHighlighted('stj'), 0.035);
+                drawJetRibbonOnGlobe(globeCtx, cx, cy, R, -30 + seasonDeg, '#facc15', '', isHighlighted('stj'), 0.035);
+                drawJetRibbonOnGlobe(globeCtx, cx, cy, R, 60 + seasonDeg, '#22d3ee', 'POLAR JET', isHighlighted('pfj'), 0.065);
+                drawJetRibbonOnGlobe(globeCtx, cx, cy, R, -60 + seasonDeg, '#22d3ee', '', isHighlighted('pfj'), 0.065);
+                globeCtx.restore();
+            }
+
+            globeCtx.restore(); // End Earth clip
+
+            // Earth Crisp Outline
+            globeCtx.strokeStyle = '#cbd5e1';
+            globeCtx.lineWidth = 2;
+            globeCtx.beginPath();
+            globeCtx.arc(cx, cy, R, 0, Math.PI * 2);
+            globeCtx.stroke();
+
+            // 6. Left Limb Animated Circulation Cells
+            if (state.showCells) {
+                const limbCells = [
+                    { key: 'hadley', a1: 2 + seasonDeg, a2: 28 + seasonDeg, label: 'HADLEY\nCELL', risingAt: 'a1' },
+                    { key: 'ferrel', a1: 32 + seasonDeg, a2: 58 + seasonDeg, label: 'FERREL\nCELL', risingAt: 'a2' },
+                    { key: 'polar',  a1: 62 + seasonDeg, a2: 88, label: 'POLAR\nCELL',  risingAt: 'a1' },
+                    { key: 'hadley', a1: -28 + seasonDeg, a2: -2 + seasonDeg, label: 'HADLEY\nCELL', risingAt: 'a2' },
+                    { key: 'ferrel', a1: -58 + seasonDeg, a2: -32 + seasonDeg, label: 'FERREL\nCELL', risingAt: 'a1' },
+                    { key: 'polar',  a1: -88, a2: -62 + seasonDeg, label: 'POLAR\nCELL',  risingAt: 'a2' }
+                ];
+
+                limbCells.forEach(cell => {
+                    drawLimbCellLoop(globeCtx, cx, cy, R, cell, isHighlighted(cell.key));
+                });
+            }
+
+            // 7. WHEN ROTATED TOWARD 90° SIDE VIEW: Draw the Expanded Right-Limb 3D Vertical Cutaway!
+            // Shows Trade Winds converging to 0°, turning UPWARD (radially away from Earth), raining out moisture, hitting Upper HIGH (17 km), and spreading North/South as DRY air!
+            if (sideWeight > 0.02) {
+                drawRightLimb3DSideCutaway(globeCtx, cx, cy, R, seasonDeg, sideWeight);
+            }
+
+            // 8. Standard Right Limb Latitude Labels (fade out as 3D Side Cutaway takes over)
+            if (frontWeight > 0.05) {
+                globeCtx.save();
+                globeCtx.globalAlpha = frontWeight;
+                const rightLabels = [
+                    { deg: 0, text: '0° (Equator)', p: 'L' },
+                    { deg: 30 + seasonDeg, text: '30°N', p: 'H' },
+                    { deg: 60 + seasonDeg, text: '60°N', p: 'L' },
+                    { deg: 88, text: '90°N', p: 'H' },
+                    { deg: -30 + seasonDeg, text: '30°S', p: 'H' },
+                    { deg: -60 + seasonDeg, text: '60°S', p: 'L' }
+                ];
+                rightLabels.forEach(item => {
+                    const rad = (item.deg * Math.PI) / 180;
+                    const lx = cx + Math.cos(rad) * (R + 12);
+                    const ly = cy - Math.sin(rad) * (R + 4);
+
+                    const px = cx + Math.cos(rad) * (R * 0.82);
+                    const py = cy - Math.sin(rad) * (R * 0.96);
+                    drawPressureBadge(globeCtx, item.deg === 0 ? cx : px, py, item.p);
+
+                    globeCtx.fillStyle = '#e2e8f0';
+                    globeCtx.font = '600 12px Inter, sans-serif';
+                    globeCtx.fillText(item.text, lx + 6, ly + 4);
+                });
+                globeCtx.restore();
+            }
+
+            // 9. Draw Synchronized Interactive Latitude Probe Slice on Globe
+            const probeRad = (state.probeLat * Math.PI) / 180;
+            const probeY = cy - Math.sin(probeRad) * R;
+            const probeHalfW = Math.cos(probeRad) * R;
+
+            globeCtx.save();
+            globeCtx.strokeStyle = '#fbbf24';
+            globeCtx.lineWidth = 2.5;
+            globeCtx.setLineDash([6, 4]);
+            globeCtx.beginPath();
+            globeCtx.moveTo(cx - probeHalfW - 22, probeY);
+            globeCtx.lineTo(cx + probeHalfW + 22 + rot * 45, probeY);
+            globeCtx.stroke();
+            globeCtx.setLineDash([]);
+
+            globeCtx.fillStyle = '#fbbf24';
+            globeCtx.beginPath();
+            globeCtx.arc(cx + probeHalfW, probeY, 5, 0, Math.PI * 2);
+            globeCtx.fill();
+            globeCtx.restore();
+        }
+
+        // Renders the 90° Side-View Cutaway on the Right Limb of the Globe so the user can see
+        // the Trade Winds turn from going "leftward" (in Front View) to going "UPWARD" into the 17 km Upper HIGH!
+        function drawRightLimb3DSideCutaway(ctx, cx, cy, R, seasonDeg, alpha) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+
+            const eqRad = (seasonDeg * Math.PI) / 180;
+            const n30Rad = ((30 + seasonDeg) * Math.PI) / 180;
+            const s30Rad = ((-30 + seasonDeg) * Math.PI) / 180;
+
+            const rSurf = R + 4;
+            const rTopHadley = R + R * 0.34; // Exaggerated 17 km Tropopause ceiling on right limb
+            const rTop30 = R + R * 0.23;     // Stepped-down ~13 km Tropopause at 30°N/S
+
+            // 1. Stepped Tropopause Boundary Arc on Right Limb
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 2.2;
+            ctx.setLineDash([6, 4]);
+            ctx.beginPath();
+            for (let deg = -85; deg <= 85; deg += 2) {
+                const rad = (deg * Math.PI) / 180;
+                const km = getTropopauseKm(Math.abs(deg - seasonDeg), 0);
+                const rAlt = R + (km / 17) * (R * 0.34);
+                const x = cx + Math.cos(rad) * rAlt;
+                const y = cy - Math.sin(rad) * rAlt;
+                if (deg === -85) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // 2. Equatorial Uplift Column (0 km Surface LOW -> 17 km Upper HIGH)
+            const eqSurfX = cx + Math.cos(eqRad) * rSurf;
+            const eqSurfY = cy - Math.sin(eqRad) * rSurf;
+            const eqTopX = cx + Math.cos(eqRad) * rTopHadley;
+            const eqTopY = cy - Math.sin(eqRad) * rTopHadley;
+
+            // Glowing Moist Uplift Plume
+            const plumeGrad = ctx.createLinearGradient(eqSurfX, eqSurfY, eqTopX, eqTopY);
+            plumeGrad.addColorStop(0, 'rgba(56, 189, 248, 0.85)');   // Warm Moist Blue-Cyan at surface
+            plumeGrad.addColorStop(0.5, 'rgba(251, 146, 60, 0.85)'); // Condensing latent heat
+            plumeGrad.addColorStop(1, 'rgba(253, 224, 71, 0.85)');   // Cold Dry air hitting 17km ceiling
+
+            ctx.strokeStyle = plumeGrad;
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.moveTo(eqSurfX, eqSurfY);
+            ctx.lineTo(eqTopX, eqTopY);
+            ctx.stroke();
+
+            // Animated Rising Air Parcels along the Equatorial Plume (0 -> 17 km)
+            for (let i = 0; i < 4; i++) {
+                const u = ((i / 4) + state.time * 0.55) % 1;
+                const px = eqSurfX + (eqTopX - eqSurfX) * u;
+                const py = eqSurfY + (eqTopY - eqSurfY) * u;
+                // Color shifts from Moist Cyan (u < 0.5) to Bone-Dry Gold (u >= 0.5)
+                ctx.fillStyle = u < 0.55 ? '#38bdf8' : '#fde047';
+                ctx.beginPath();
+                ctx.arc(px, py, 3.8, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Rain Cloud & Raindrops falling back to Equator at mid-altitude (wrung dry!)
+            const cloudX = (eqSurfX + eqTopX) * 0.5;
+            const cloudY = (eqSurfY + eqTopY) * 0.5;
+            ctx.fillStyle = 'rgba(226, 232, 240, 0.9)';
+            ctx.beginPath();
+            ctx.arc(cloudX, cloudY - 12, 9, 0, Math.PI * 2);
+            ctx.arc(cloudX + 8, cloudY - 10, 7, 0, Math.PI * 2);
+            ctx.arc(cloudX - 7, cloudY - 9, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Falling blue rain streaks toward Earth surface
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 1.8;
+            for (let r = -1; r <= 1; r++) {
+                ctx.beginPath();
+                ctx.moveTo(cloudX - 6, cloudY - 6 + r * 4);
+                ctx.lineTo(cloudX - 16, cloudY - 4 + r * 4);
+                ctx.stroke();
+            }
+            ctx.fillStyle = '#7dd3fc';
+            ctx.font = 'bold 10px Inter, sans-serif';
+            ctx.fillText('Rains out moisture!', cloudX - 24, cloudY - 24);
+
+            // 3. Upper-Troposphere Dry Poleward Flow (17 km Equator HIGH -> 30°N & 30°S Upper LOW)
+            [n30Rad, s30Rad].forEach((targetRad, idx) => {
+                const isNorth = idx === 0;
+                // Draw upper dry arc from eqRad to targetRad
+                ctx.strokeStyle = '#fde047'; // Dry Gold
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                const steps = 20;
+                for (let s = 0; s <= steps; s++) {
+                    const u = s / steps;
+                    const ang = eqRad + (targetRad - eqRad) * u;
+                    const radNow = rTopHadley + (rTop30 - rTopHadley) * u;
+                    const x = cx + Math.cos(ang) * radNow;
+                    const y = cy - Math.sin(ang) * radNow;
+                    if (s === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                // Sinking Dry Column at 30°N / 30°S (Upper LOW -> Surface HIGH)
+                const top30X = cx + Math.cos(targetRad) * rTop30;
+                const top30Y = cy - Math.sin(targetRad) * rTop30;
+                const surf30X = cx + Math.cos(targetRad) * rSurf;
+                const surf30Y = cy - Math.sin(targetRad) * rSurf;
+
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(top30X, top30Y);
+                ctx.lineTo(surf30X, surf30Y);
+                ctx.stroke();
+
+                // Return Surface Trade Wind Branch along right rim (30° Surface HIGH -> 0° Surface LOW, picking up moisture)
+                ctx.strokeStyle = '#22d3ee';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(cx, cy, rSurf, -targetRad, -eqRad, isNorth);
+                ctx.stroke();
+
+                // Badges for 30° Surface H and Upper L
+                drawCompactBadge(ctx, surf30X - 12, surf30Y, 'H', 'Surf', '#38bdf8');
+                drawCompactBadge(ctx, top30X + 18, top30Y, 'L', 'Aloft', '#f87171');
+
+                // Jet Stream Cross-Section Circle right at 30°N/S Tropopause Step!
+                if (state.showJets) {
+                    ctx.fillStyle = '#0f172a';
+                    ctx.beginPath();
+                    ctx.arc(top30X, top30Y, 9, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#facc15';
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+                    ctx.fillStyle = '#facc15';
+                    ctx.font = 'bold 9px JetBrains Mono, monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('⊗', top30X, top30Y + 3); // Flowing into page (Eastward)
+                }
+            });
+
+            // 4. Prominent Pressure Flip Badges at Equator (Surface LOW vs 17 km Upper HIGH)
+            drawCompactBadge(ctx, eqSurfX - 18, eqSurfY, 'L', '0 km Surf', '#f87171');
+            drawCompactBadge(ctx, eqTopX + 26, eqTopY, 'H', '17 km Aloft', '#38bdf8');
+
+            // Explanatory Callout Text on Right Cutaway
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#fef08a';
+            ctx.font = 'bold 11px Inter, sans-serif';
+            ctx.fillText('↑ Warm Moist Air Rises', eqTopX + 8, eqTopY + 26);
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '10px Inter, sans-serif';
+            ctx.fillText('Pushed N & S as DRY air by 17km HIGH', eqTopX + 8, eqTopY + 40);
+
+            ctx.restore();
+        }
+
+        function drawCompactBadge(ctx, x, y, letter, sub, color) {
+            ctx.save();
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(x - 22, y - 11, 44, 22, 5);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = color;
+            ctx.font = 'bold 11px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${letter} (${sub})`, x, y + 4);
+            ctx.restore();
+        }
+
+        function drawContinentBlob(ctx, x, y, rx, ry, rot) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rot);
+            ctx.beginPath();
+            ctx.ellipse(0, 0, Math.max(1, Math.abs(rx)), Math.max(1, Math.abs(ry)), 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function drawPressureBadge(ctx, x, y, type) {
+            ctx.save();
+            ctx.font = 'bold 15px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = type === 'L' ? '#f87171' : '#38bdf8';
+            ctx.shadowColor = 'rgba(0,0,0,0.85)';
+            ctx.shadowBlur = 4;
+            ctx.fillText(type, x, y);
+            ctx.restore();
+        }
+
+        function drawSurfaceWindBand(ctx, cx, cy, R, latStart, latEnd, bandType, highlighted, rot = 0) {
+            const alpha = highlighted ? 0.95 : 0.22;
+            const midLat = (latStart + latEnd) / 2;
+            const yMid = cy - Math.sin((midLat * Math.PI) / 180) * R;
+
+            // Band Title Label in Center
+            ctx.save();
+            ctx.globalAlpha = alpha * Math.max(0.15, 1 - rot * 0.85);
+            ctx.textAlign = 'center';
+            ctx.font = 'bold 13px Inter, sans-serif';
+            if (bandType.startsWith('trade')) {
+                ctx.fillStyle = '#fef08a';
+                ctx.fillText('Trade Winds', cx - rot * 25, yMid + 4);
+            } else if (bandType.startsWith('west')) {
+                ctx.fillStyle = '#fde047';
+                ctx.fillText('Westerlies', cx - rot * 25, yMid + 4);
+            } else {
+                ctx.fillStyle = '#7dd3fc';
+                ctx.fillText('Polar Easterlies', cx - rot * 25, yMid + 4);
+            }
+            ctx.restore();
+
+            ctx.save();
+            ctx.globalAlpha = alpha;
+
+            // Draw 4 curved animated wind arrows across the band
+            // As rot goes from 0 (Front View) -> 1 (90° Side View), the East->West (leftward) component foreshortens to 0
+            // and shifts toward the right limb so the user sees the winds feeding directly into the vertical cutaway!
+            const zonalScale = Math.cos(rot * Math.PI * 0.5);
+            const xOffsets = [-0.58, -0.26, 0.26, 0.58];
+            const rTop = (latEnd * Math.PI) / 180;
+            const rBot = (latStart * Math.PI) / 180;
+            const yTop = cy - Math.sin(rTop) * R;
+            const yBot = cy - Math.sin(rBot) * R;
+
+            xOffsets.forEach(xFrac => {
+                const maxChord = Math.cos((midLat * Math.PI) / 180) * R;
+                // Shift arrows toward the right limb (+maxChord) as user rotates globe to 90° Side View
+                const xShiftedFrac = xFrac * (1 - rot * 0.65) + rot * 0.68;
+                if (Math.abs(xShiftedFrac * R) > maxChord * 0.94) return;
+
+                const xCenter = cx + xShiftedFrac * R;
+                const dx = 18 * zonalScale;
+                // When near the right limb in side view, curve the arrow slightly outward along the spherical rim
+                const rimSlope = rot * 8;
+                let sx, sy, cxCtrl, cyCtrl, ex, ey, color;
+
+                if (bandType === 'tradeN') {
+                    // NE to SW (Front: Down-Left; Side: Down along right rim into Equator, then UP!)
+                    sx = xCenter + dx - rimSlope; sy = yTop + 4;
+                    cxCtrl = xCenter + dx * 0.25; cyCtrl = (yTop + yBot) / 2 + 4;
+                    ex = xCenter - dx + rimSlope; ey = yBot - 4;
+                    color = '#fef08a';
+                } else if (bandType === 'tradeS') {
+                    // SE to NW
+                    sx = xCenter + dx - rimSlope; sy = yBot - 4;
+                    cxCtrl = xCenter + dx * 0.25; cyCtrl = (yTop + yBot) / 2 - 4;
+                    ex = xCenter - dx + rimSlope; ey = yTop + 4;
+                    color = '#fef08a';
+                } else if (bandType === 'westN') {
+                    // SW to NE
+                    sx = xCenter - dx; sy = yBot - 4;
+                    cxCtrl = xCenter - dx * 0.25; cyCtrl = (yTop + yBot) / 2 - 4;
+                    ex = xCenter + dx; ey = yTop + 4;
+                    color = '#fb923c';
+                } else if (bandType === 'westS') {
+                    // NW to SE
+                    sx = xCenter - dx; sy = yTop + 4;
+                    cxCtrl = xCenter - dx * 0.25; cyCtrl = (yTop + yBot) / 2 + 4;
+                    ex = xCenter + dx; ey = yBot - 4;
+                    color = '#fb923c';
+                } else if (bandType === 'polarN') {
+                    // NE to SW
+                    sx = xCenter + 14 * zonalScale; sy = yTop + 3;
+                    cxCtrl = xCenter + 2 * zonalScale; cyCtrl = (yTop + yBot) / 2 + 2;
+                    ex = xCenter - 14 * zonalScale; ey = yBot - 3;
+                    color = '#38bdf8';
+                } else {
+                    // SE to NW
+                    sx = xCenter + 14 * zonalScale; sy = yBot - 3;
+                    cxCtrl = xCenter + 2 * zonalScale; cyCtrl = (yTop + yBot) / 2 - 2;
+                    ex = xCenter - 14 * zonalScale; ey = yTop + 3;
+                    color = '#38bdf8';
+                }
+
+                // Draw Curved Shaft
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2.4;
+                ctx.beginPath();
+                ctx.moveTo(sx, sy);
+                ctx.quadraticCurveTo(cxCtrl, cyCtrl, ex, ey);
+                ctx.stroke();
+
+                // Draw Arrowhead at End
+                const angle = Math.atan2(ey - cyCtrl, ex - cxCtrl);
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.moveTo(ex, ey);
+                ctx.lineTo(ex - 8 * Math.cos(angle - 0.45), ey - 8 * Math.sin(angle - 0.45));
+                ctx.lineTo(ex - 8 * Math.cos(angle + 0.45), ey - 8 * Math.sin(angle + 0.45));
+                ctx.closePath();
+                ctx.fill();
+
+                // Animated Moving Wind Parcel Dot along Quadratic Bezier
+                const t = (state.time * 0.65 + (xFrac + 1) * 0.5) % 1;
+                const px = (1 - t) * (1 - t) * sx + 2 * (1 - t) * t * cxCtrl + t * t * ex;
+                const py = (1 - t) * (1 - t) * sy + 2 * (1 - t) * t * cyCtrl + t * t * ey;
+
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(px, py, 2.6, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            ctx.restore();
+        }
+
+        function drawJetRibbonOnGlobe(ctx, cx, cy, R, latDeg, color, label, highlighted, ampBase) {
+            const rad = (latDeg * Math.PI) / 180;
+            const yBase = cy - Math.sin(rad) * R;
+            const halfW = Math.cos(rad) * R;
+            if (halfW < 10) return;
+
+            ctx.save();
+            ctx.globalAlpha = highlighted ? 0.95 : 0.22;
+
+            const amp = R * ampBase * state.waviness;
+            const steps = 48;
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = highlighted ? 4.5 : 2.5;
+            ctx.shadowColor = color;
+            ctx.shadowBlur = highlighted ? 10 : 0;
+
+            ctx.beginPath();
+            for (let i = 0; i <= steps; i++) {
+                const u = i / steps;
+                const x = cx - halfW + u * (2 * halfW);
+                const wave = Math.sin(u * Math.PI * 4 - state.time * 3.0) * amp;
+                const y = yBase + wave;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Animated Fast West->East Jet Parcels
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#ffffff';
+            for (let p = 0; p < 4; p++) {
+                const u = ((p / 4) + state.time * 0.45) % 1;
+                const x = cx - halfW + u * (2 * halfW);
+                const y = yBase + Math.sin(u * Math.PI * 4 - state.time * 3.0) * amp;
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            if (label && highlighted) {
+                ctx.fillStyle = color;
+                ctx.font = 'bold 10px JetBrains Mono, monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText(label + ' (W→E)', cx, yBase - amp - 7);
+            }
+
+            ctx.restore();
+        }
+
+        function drawLimbCellLoop(ctx, cx, cy, R, cell, highlighted) {
+            ctx.save();
+            ctx.globalAlpha = highlighted ? 0.95 : 0.2;
+
+            // Left limb angles: 180 deg is Equator on left side
+            const deg1 = 180 - cell.a1;
+            const deg2 = 180 - cell.a2;
+            const r1 = (deg1 * Math.PI) / 180;
+            const r2 = (deg2 * Math.PI) / 180;
+
+            const rInner = R + 5;
+            const rOuter = R + 28;
+
+            const p1In = { x: cx + Math.cos(r1) * rInner, y: cy - Math.sin(r1) * rInner };
+            const p1Out = { x: cx + Math.cos(r1) * rOuter, y: cy - Math.sin(r1) * rOuter };
+            const p2In = { x: cx + Math.cos(r2) * rInner, y: cy - Math.sin(r2) * rInner };
+            const p2Out = { x: cx + Math.cos(r2) * rOuter, y: cy - Math.sin(r2) * rOuter };
+
+            const warmColor = '#f87171';
+            const coolColor = '#38bdf8';
+
+            // Outer Aloft Arc
+            ctx.strokeStyle = cell.risingAt === 'a1' ? warmColor : coolColor;
+            ctx.lineWidth = 2.4;
+            ctx.beginPath();
+            ctx.arc(cx, cy, rOuter, -r1, -r2, cell.a2 > cell.a1);
+            ctx.stroke();
+
+            // Inner Surface Arc
+            ctx.strokeStyle = cell.risingAt === 'a1' ? coolColor : warmColor;
+            ctx.beginPath();
+            ctx.arc(cx, cy, rInner, -r2, -r1, cell.a2 < cell.a1);
+            ctx.stroke();
+
+            // Radial Uprights (Rising & Sinking Columns)
+            ctx.strokeStyle = cell.risingAt === 'a1' ? warmColor : coolColor;
+            ctx.beginPath();
+            ctx.moveTo(p1In.x, p1In.y);
+            ctx.lineTo(p1Out.x, p1Out.y);
+            ctx.stroke();
+
+            ctx.strokeStyle = cell.risingAt === 'a2' ? warmColor : coolColor;
+            ctx.beginPath();
+            ctx.moveTo(p2In.x, p2In.y);
+            ctx.lineTo(p2Out.x, p2Out.y);
+            ctx.stroke();
+
+            // Animated Orbiting Dot around Limb Cell
+            const t = (state.time * 0.5) % 1;
+            const midAng = (r1 + r2) / 2 + Math.sin(t * Math.PI * 2) * ((r2 - r1) * 0.42);
+            const midRad = (rInner + rOuter) / 2 + Math.cos(t * Math.PI * 2) * ((rOuter - rInner) * 0.42);
+            const dotX = cx + Math.cos(midAng) * midRad;
+            const dotY = cy - Math.sin(midAng) * midRad;
+
+            ctx.fillStyle = '#fef08a';
+            ctx.beginPath();
+            ctx.arc(dotX, dotY, 2.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cell Name Label Outside Left Limb
+            const labelAng = (r1 + r2) / 2;
+            const lx = cx + Math.cos(labelAng) * (rOuter + 28);
+            const ly = cy - Math.sin(labelAng) * (rOuter + 18);
+
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = 'bold 10px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            const lines = cell.label.split('\n');
+            lines.forEach((line, idx) => {
+                ctx.fillText(line, lx, ly + (idx - 0.3) * 11);
+            });
+
+            ctx.restore();
+        }
+
+        /***********************************************************************
+         * RIGHT PANEL: TROPOSPHERIC VERTICAL CROSS-SECTION (0° TO 90°N, 0–18 KM)
+         ***********************************************************************/
+        function drawProfilePanel() {
+            const w = profileCanvas.width;
+            const h = profileCanvas.height;
+            profileCtx.clearRect(0, 0, w, h);
+
+            // Margins for Dual Axis (km & miles on left, Latitude on bottom)
+            const mLeft = 72;
+            const mRight = 28;
+            const mTop = 28;
+            const mBottom = 46;
+            const plotW = Math.max(80, w - mLeft - mRight);
+            const plotH = Math.max(80, h - mTop - mBottom);
+
+            const latToX = lat => mLeft + (lat / 90) * plotW;
+            const kmToY = km => mTop + plotH - (km / 18.5) * plotH;
+            const seasonDeg = state.seasonShift * 5;
+
+            // 1. Fill Shaded Troposphere Volume Under the Stepped Tropopause Curve
+            profileCtx.save();
+            profileCtx.beginPath();
+            profileCtx.moveTo(latToX(0), kmToY(0));
+            for (let lat = 0; lat <= 90; lat += 1) {
+                const km = getTropopauseKm(lat, state.seasonShift);
+                profileCtx.lineTo(latToX(lat), kmToY(km));
+            }
+            profileCtx.lineTo(latToX(90), kmToY(0));
+            profileCtx.closePath();
+
+            const tropoGrad = profileCtx.createLinearGradient(mLeft, mTop, mLeft + plotW, mTop + plotH);
+            tropoGrad.addColorStop(0, 'rgba(56, 189, 248, 0.22)');
+            tropoGrad.addColorStop(0.5, 'rgba(30, 64, 175, 0.18)');
+            tropoGrad.addColorStop(1, 'rgba(14, 116, 144, 0.25)');
+            profileCtx.fillStyle = tropoGrad;
+            profileCtx.fill();
+            profileCtx.restore();
+
+            // 2. Draw Stepped Tropopause Dashed Line & Labels
+            profileCtx.save();
+            profileCtx.strokeStyle = '#cbd5e1';
+            profileCtx.lineWidth = 2.5;
+            profileCtx.setLineDash([7, 5]);
+            profileCtx.beginPath();
+            for (let lat = 0; lat <= 90; lat += 1) {
+                const km = getTropopauseKm(lat, state.seasonShift);
+                if (lat === 0) profileCtx.moveTo(latToX(lat), kmToY(km));
+                else profileCtx.lineTo(latToX(lat), kmToY(km));
+            }
+            profileCtx.stroke();
+            profileCtx.setLineDash([]);
+
+            // Tropopause & Stratosphere Titles
+            profileCtx.fillStyle = '#e2e8f0';
+            profileCtx.font = 'bold 12px Inter, sans-serif';
+            profileCtx.fillText('TROPOPAUSE (Capping Boundary)', latToX(5), kmToY(17.1) - 8);
+            profileCtx.fillStyle = '#94a3b8';
+            profileCtx.font = 'bold 13px Inter, sans-serif';
+            profileCtx.fillText('STRATOSPHERE (Stable Air)', latToX(58), kmToY(16.2));
+            profileCtx.restore();
+
+            // 3. Draw Polar Front Boundary (~60°N Cold/Warm Clash)
+            const pfLat = Math.max(40, Math.min(78, 60 + seasonDeg));
+            drawPolarFrontBoundary(profileCtx, latToX, kmToY, pfLat);
+
+            // 4. Draw the 3 Animated Vertical Circulation Cells (Hadley, Ferrel, Polar)
+            if (state.showCells) {
+                const lat30 = Math.max(18, Math.min(42, 30 + seasonDeg));
+                const lat60 = pfLat;
+
+                // Hadley Cell (0° to 30°N, 0 to 16.5 km)
+                drawVerticalCellLoop(profileCtx, {
+                    x1: latToX(2),
+                    x2: latToX(lat30 - 1.5),
+                    yBot: kmToY(1.2),
+                    yTop1: kmToY(15.8),
+                    yTop2: kmToY(13.2),
+                    dir: 'cw', // Rises at 0° (left), moves right aloft, sinks at 30°N (right), returns left at bottom
+                    title: 'HADLEY\nCELL',
+                    colorWarm: '#fde047',
+                    colorCool: '#fb923c',
+                    highlighted: isHighlighted('hadley')
+                });
+
+                // Ferrel Cell (30°N to 60°N, 0 to 11.5 km)
+                drawVerticalCellLoop(profileCtx, {
+                    x1: latToX(lat30 + 1.5),
+                    x2: latToX(lat60 - 2),
+                    yBot: kmToY(1.2),
+                    yTop1: kmToY(11.4),
+                    yTop2: kmToY(10.2),
+                    dir: 'ccw', // Sinks at 30°N (left), moves right at surface (Westerlies), rises at 60°N (right), returns left aloft
+                    title: 'FERREL\nCELL',
+                    colorWarm: '#f87171',
+                    colorCool: '#38bdf8',
+                    highlighted: isHighlighted('ferrel')
+                });
+
+                // Polar Cell (60°N to 90°N, 0 to 8.5 km)
+                drawVerticalCellLoop(profileCtx, {
+                    x1: latToX(lat60 + 2),
+                    x2: latToX(88),
+                    yBot: kmToY(1.2),
+                    yTop1: kmToY(9.0),
+                    yTop2: kmToY(7.8),
+                    dir: 'cw', // Rises at 60°N (left), moves right aloft toward Pole, sinks at 90°N (right), returns left at surface
+                    title: 'POLAR\nCELL',
+                    colorWarm: '#f87171',
+                    colorCool: '#38bdf8',
+                    highlighted: isHighlighted('polar')
+                });
+            }
+
+            // 5. Lower Troposphere Surface Wind Labels (0–2 km Band at Bottom)
+            if (state.showSurface) {
+                drawSurfaceLayerProfile(profileCtx, latToX, kmToY, seasonDeg);
+            }
+
+            // 5B. Draw Surface vs Upper-Troposphere Pressure Flip Badges & Equatorial Rain Cloud on Right Profile!
+            drawProfilePressureAndMoisture(profileCtx, latToX, kmToY, seasonDeg);
+
+            // 6. Draw 3D Cylindrical Jet Stream Cores at Tropopause Breaks!
+            if (state.showJets) {
+                const stjLat = 30 + seasonDeg;
+                const pfjLat = 60 + seasonDeg;
+
+                // Subtropical Jet Stream (~30°N, ~13.2 km)
+                drawJetStreamCylinder(profileCtx, latToX(stjLat), kmToY(13.2), {
+                    title: 'SUBTROPICAL\nJET STREAM',
+                    altLabel: '~13 km (8 mi)',
+                    color: '#facc15',
+                    glow: 'rgba(250, 204, 21, 0.45)',
+                    highlighted: isHighlighted('stj')
+                });
+
+                // Polar Jet Stream (~60°N, ~9.8 km)
+                drawJetStreamCylinder(profileCtx, latToX(pfjLat), kmToY(9.8), {
+                    title: 'POLAR\nJET STREAM',
+                    altLabel: '~10 km (6 mi)',
+                    color: '#22d3ee',
+                    glow: 'rgba(34, 211, 238, 0.45)',
+                    highlighted: isHighlighted('pfj')
+                });
+            }
+
+            // 7. Draw Dual Altitude Axes (km & miles) and Bottom Latitude Axis
+            drawProfileAxes(profileCtx, mLeft, mTop, plotW, plotH, latToX, kmToY);
+
+            // 8. Draw Synchronized Interactive Latitude Probe Vertical Line
+            const probeX = latToX(state.probeLat);
+            const probeTropoY = kmToY(getTropopauseKm(state.probeLat, state.seasonShift));
+
+            profileCtx.save();
+            profileCtx.strokeStyle = '#fbbf24';
+            profileCtx.lineWidth = 2.5;
+            profileCtx.setLineDash([6, 4]);
+            profileCtx.beginPath();
+            profileCtx.moveTo(probeX, mTop);
+            profileCtx.lineTo(probeX, mTop + plotH);
+            profileCtx.stroke();
+            profileCtx.setLineDash([]);
+
+            // Highlight dot right on the Tropopause intersection
+            profileCtx.fillStyle = '#fbbf24';
+            profileCtx.beginPath();
+            profileCtx.arc(probeX, probeTropoY, 6, 0, Math.PI * 2);
+            profileCtx.fill();
+            profileCtx.strokeStyle = '#0f172a';
+            profileCtx.lineWidth = 2;
+            profileCtx.stroke();
+            profileCtx.restore();
+        }
+
+        function drawProfilePressureAndMoisture(ctx, latToX, kmToY, seasonDeg) {
+            ctx.save();
+
+            const xEq = latToX(3.5);
+            const x30 = latToX(30 + seasonDeg);
+            const x60 = latToX(60 + seasonDeg);
+            const x90 = latToX(87);
+
+            // 1. Equatorial Rising Moisture -> Rain Cloud -> Bone-Dry Upper Divergence
+            if (isHighlighted('hadley')) {
+                const cloudX = latToX(5.5);
+                const cloudY = kmToY(7.8);
+
+                // Cumulonimbus Rain Cloud at Equator mid-troposphere
+                ctx.fillStyle = 'rgba(226, 232, 240, 0.92)';
+                ctx.beginPath();
+                ctx.arc(cloudX, cloudY, 11, 0, Math.PI * 2);
+                ctx.arc(cloudX + 10, cloudY + 2, 9, 0, Math.PI * 2);
+                ctx.arc(cloudX - 9, cloudY + 3, 8, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Animated raindrops falling back to 0° surface
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = 1.8;
+                const rainOffset = (state.time * 18) % 10;
+                for (let i = -1; i <= 1; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(cloudX + i * 7, cloudY + 12 + rainOffset);
+                    ctx.lineTo(cloudX + i * 7 - 2, cloudY + 20 + rainOffset);
+                    ctx.stroke();
+                }
+
+                ctx.fillStyle = '#7dd3fc';
+                ctx.font = 'bold 10px Inter, sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText('1. Warm Moist Air Rises', latToX(8.5), kmToY(4.2));
+                ctx.fillText('2. Cools & Rains Out Here', latToX(8.5), kmToY(7.8));
+                ctx.fillStyle = '#fde047';
+                ctx.fillText('3. Bone-Dry Air Pushed North →', latToX(7.5), kmToY(15.2));
+            }
+
+            // 2. Vertical Pressure Flip Badges (Bottom vs Top of Troposphere)
+            // Equator (0°): Surface LOW -> 17 km Upper HIGH
+            drawCompactBadge(ctx, xEq + 16, kmToY(1.0), 'L', 'Surf', '#f87171');
+            drawCompactBadge(ctx, xEq + 18, kmToY(16.1), 'H', 'Aloft', '#38bdf8');
+
+            // Subtropics (30°N): Surface HIGH -> 13 km Upper LOW
+            drawCompactBadge(ctx, x30, kmToY(1.0), 'H', 'Surf', '#38bdf8');
+            drawCompactBadge(ctx, x30 - 38, kmToY(13.6), 'L', 'Aloft', '#f87171');
+
+            // Subpolar (60°N): Surface LOW
+            drawCompactBadge(ctx, x60, kmToY(1.0), 'L', 'Surf', '#f87171');
+
+            // North Pole (90°N): Surface HIGH
+            drawCompactBadge(ctx, x90 - 10, kmToY(1.0), 'H', 'Surf', '#38bdf8');
+
+            ctx.restore();
+        }
+
+        function drawSurfaceLayerProfile(ctx, latToX, kmToY, seasonDeg) {
+            const ySurf = kmToY(0.55);
+            const lat30 = 30 + seasonDeg;
+            const lat60 = 60 + seasonDeg;
+
+            ctx.save();
+            ctx.font = 'bold 11px Inter, sans-serif';
+            ctx.textAlign = 'center';
+
+            // Trade Winds (30°N -> 0° Equator)
+            ctx.globalAlpha = isHighlighted('hadley') ? 0.95 : 0.25;
+            ctx.fillStyle = '#fef08a';
+            ctx.fillText('← Trade Winds (0–2 km)', latToX(lat30 * 0.5), ySurf);
+
+            // Westerlies (30°N -> 60°N)
+            ctx.globalAlpha = isHighlighted('ferrel') ? 0.95 : 0.25;
+            ctx.fillStyle = '#fb923c';
+            ctx.fillText('Westerlies →', latToX((lat30 + lat60) * 0.5), ySurf);
+
+            // Polar Easterlies (90°N -> 60°N)
+            ctx.globalAlpha = isHighlighted('polar') ? 0.95 : 0.25;
+            ctx.fillStyle = '#7dd3fc';
+            ctx.fillText('← Polar Easterlies', latToX((lat60 + 90) * 0.5), ySurf);
+
+            ctx.restore();
+        }
+
+        function drawPolarFrontBoundary(ctx, latToX, kmToY, pfLat) {
+            ctx.save();
+            ctx.globalAlpha = (isHighlighted('pfj') || isHighlighted('ferrel') || isHighlighted('polar')) ? 0.9 : 0.25;
+
+            const xBot = latToX(pfLat - 2);
+            const yBot = kmToY(0.8);
+            const xTop = latToX(pfLat + 4);
+            const yTop = kmToY(9.2);
+
+            ctx.strokeStyle = '#a78bfa';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(xBot, yBot);
+            ctx.quadraticCurveTo(latToX(pfLat + 1), kmToY(5), xTop, yTop);
+            ctx.stroke();
+
+            ctx.fillStyle = '#c4b5fd';
+            ctx.font = 'bold 10px Inter, sans-serif';
+            ctx.fillText('Polar Front (Cold/Warm Clash)', xTop + 6, kmToY(6.8));
+            ctx.restore();
+        }
+
+        function drawVerticalCellLoop(ctx, cfg) {
+            ctx.save();
+            ctx.globalAlpha = cfg.highlighted ? 0.95 : 0.2;
+
+            const cx = (cfg.x1 + cfg.x2) / 2;
+            const yTopAvg = (cfg.yTop1 + cfg.yTop2) / 2;
+            const cy = (yTopAvg + cfg.yBot) / 2;
+            const rx = Math.max(4, Math.abs(cfg.x2 - cfg.x1) * 0.44);
+            const ry = Math.max(4, Math.abs(cfg.yBot - yTopAvg) * 0.44);
+
+            // Left Half (Rising or Sinking)
+            ctx.strokeStyle = cfg.dir === 'cw' ? cfg.colorWarm : cfg.colorCool;
+            ctx.lineWidth = 2.6;
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, rx, ry, 0, Math.PI * 0.5, Math.PI * 1.5);
+            ctx.stroke();
+
+            // Right Half (Sinking or Rising)
+            ctx.strokeStyle = cfg.dir === 'cw' ? cfg.colorCool : cfg.colorWarm;
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, rx, ry, 0, -Math.PI * 0.5, Math.PI * 0.5);
+            ctx.stroke();
+
+            // Animated Air Parcels Orbiting the Vertical Loop
+            const sign = cfg.dir === 'cw' ? 1 : -1;
+            for (let i = 0; i < 4; i++) {
+                const ang = (i / 4) * Math.PI * 2 + state.time * 1.3 * sign;
+                const px = cx + Math.cos(ang) * rx;
+                const py = cy + Math.sin(ang) * ry;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(px, py, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Cell Title Label inside Loop
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = 'bold 12px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            const lines = cfg.title.split('\n');
+            lines.forEach((line, idx) => {
+                ctx.fillText(line, cx, cy + (idx - 0.3) * 14);
+            });
+
+            ctx.restore();
+        }
+
+        function drawJetStreamCylinder(ctx, x, y, cfg) {
+            ctx.save();
+            ctx.globalAlpha = cfg.highlighted ? 1.0 : 0.28;
+
+            const dx = 34;
+            const dy = -14;
+            const r = 13;
+
+            // Outer Glow
+            ctx.shadowColor = cfg.color;
+            ctx.shadowBlur = cfg.highlighted ? 16 : 0;
+
+            // 3D Cylinder Body (angled into the page from SW to NE)
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+            ctx.strokeStyle = cfg.color;
+            ctx.lineWidth = 2.5;
+
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0.7, 0.7 + Math.PI);
+            ctx.lineTo(x + dx - Math.cos(0.7) * r, y + dy - Math.sin(0.7) * r);
+            ctx.arc(x + dx, y + dy, r, 0.7 + Math.PI, 0.7, true);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Front Cross-Section Face
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Pulsing Jet Core Rings
+            const pulse = (state.time * 1.8) % 1;
+            ctx.strokeStyle = cfg.color;
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(x, y, Math.max(1, r * pulse), 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Arrow inside tube pointing into the page (West -> East)
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.moveTo(x + 4, y - 2);
+            ctx.lineTo(x + dx - 4, y + dy + 2);
+            ctx.stroke();
+
+            // Title & Altitude Callout Above Cylinder
+            ctx.fillStyle = cfg.color;
+            ctx.font = 'bold 11px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            const lines = cfg.title.split('\n');
+            lines.forEach((line, idx) => {
+                ctx.fillText(line, x + dx * 0.4, y + dy - r - 18 + idx * 12);
+            });
+
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '10px JetBrains Mono, monospace';
+            ctx.fillText(cfg.altLabel, x + dx * 0.4, y + r + 14);
+
+            ctx.restore();
+        }
+
+        function drawProfileAxes(ctx, mLeft, mTop, plotW, plotH, latToX, kmToY) {
+            ctx.save();
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 1.5;
+
+            // Y-Axis (km & miles)
+            ctx.beginPath();
+            ctx.moveTo(mLeft, mTop);
+            ctx.lineTo(mLeft, mTop + plotH);
+            ctx.lineTo(mLeft + plotW, mTop + plotH);
+            ctx.stroke();
+
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '11px JetBrains Mono, monospace';
+            ctx.textAlign = 'right';
+            ctx.fillText('km | mi', mLeft - 8, mTop - 10);
+
+            for (let km = 0; km <= 18; km += 3) {
+                const y = kmToY(km);
+                const mi = Math.round(km * 0.621371);
+                ctx.beginPath();
+                ctx.moveTo(mLeft - 5, y);
+                ctx.lineTo(mLeft + 4, y);
+                ctx.stroke();
+                ctx.fillText(`${km} | ${mi}`, mLeft - 8, y + 4);
+            }
+
+            // X-Axis (Latitude 0° to 90°N)
+            ctx.textAlign = 'center';
+            ctx.font = 'bold 12px Inter, sans-serif';
+            [0, 30, 60, 90].forEach(lat => {
+                const x = latToX(lat);
+                ctx.beginPath();
+                ctx.moveTo(x, mTop + plotH);
+                ctx.lineTo(x, mTop + plotH + 6);
+                ctx.stroke();
+                ctx.fillStyle = '#e2e8f0';
+                ctx.fillText(lat === 0 ? '0° (Equator)' : `${lat}°N`, x, mTop + plotH + 22);
+            });
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.fillText("EARTH'S SURFACE (0 km Altitude)", mLeft + plotW * 0.5, mTop + plotH + 38);
+            ctx.restore();
+        }
+
+        /***********************************************************************
+         * POINTER INTERACTION HANDLERS (BOTH CANVASES)
+         ***********************************************************************/
+        function handleProfilePointer(e, isClick = false) {
+            const rect = profileCanvas.getBoundingClientRect();
+            const px = (e.clientX - rect.left) * (profileCanvas.width / rect.width);
+            const py = (e.clientY - rect.top) * (profileCanvas.height / rect.height);
+
+            const mLeft = 72;
+            const mRight = 28;
+            const mTop = 28;
+            const mBottom = 46;
+            const plotW = Math.max(80, profileCanvas.width - mLeft - mRight);
+            const plotH = Math.max(80, profileCanvas.height - mTop - mBottom);
+
+            const lat = Math.max(0, Math.min(90, ((px - mLeft) / plotW) * 90));
+            const km = Math.max(0, Math.min(18.5, ((mTop + plotH - py) / plotH) * 18.5));
+
+            if (state.isDraggingProbe || isClick) {
+                setProbeLatitude(lat);
+            }
+
+            const seasonDeg = state.seasonShift * 5;
+            if (Math.abs(lat - (30 + seasonDeg)) < 6 && Math.abs(km - 13.2) < 2.8) {
+                state.hoveredFeature = 'stj';
+            } else if (Math.abs(lat - (60 + seasonDeg)) < 6 && Math.abs(km - 9.8) < 2.8) {
+                state.hoveredFeature = 'pfj';
+            } else if (lat < 30 + seasonDeg) {
+                state.hoveredFeature = 'hadley';
+            } else if (lat < 60 + seasonDeg) {
+                state.hoveredFeature = 'ferrel';
+            } else {
+                state.hoveredFeature = 'polar';
+            }
+
+            if (isClick && state.hoveredFeature) {
+                selectFeature(state.hoveredFeature);
+            } else {
+                updateInfoCard();
+            }
+        }
+
+        function handleGlobePointer(e, isClick = false) {
+            const rect = globeCanvas.getBoundingClientRect();
+            const px = (e.clientX - rect.left) * (globeCanvas.width / rect.width);
+            const py = (e.clientY - rect.top) * (globeCanvas.height / rect.height);
+
+            // Horizontal dragging rotates the 3D Globe seamlessly between Front View (0) and 90° Side View (1), even when paused!
+            if (state.isDraggingGlobeRot && !isClick) {
+                const dx = e.clientX - state.dragStartX;
+                if (Math.abs(dx) > 4) {
+                    const newRot = state.dragStartRot + dx / 180;
+                    setGlobeRotation(newRot);
+                }
+            }
+
+            const cx = globeCanvas.width * (0.52 - state.globeRot * 0.14);
+            const cy = globeCanvas.height * 0.51;
+            const R = Math.min(globeCanvas.width, globeCanvas.height) * 0.36;
+
+            const sinLat = Math.max(-1, Math.min(1, (cy - py) / R));
+            const latSigned = Math.asin(sinLat) * (180 / Math.PI);
+            const absLat = Math.abs(latSigned);
+
+            if (state.isDraggingProbe || isClick) {
+                setProbeLatitude(absLat);
+            }
+
+            const seasonDeg = state.seasonShift * 5;
+            if (Math.abs(absLat - (30 + seasonDeg)) < 4.5) {
+                state.hoveredFeature = 'stj';
+            } else if (Math.abs(absLat - (60 + seasonDeg)) < 4.5) {
+                state.hoveredFeature = 'pfj';
+            } else if (absLat < 30 + seasonDeg) {
+                state.hoveredFeature = 'hadley';
+            } else if (absLat < 60 + seasonDeg) {
+                state.hoveredFeature = 'ferrel';
+            } else {
+                state.hoveredFeature = 'polar';
+            }
+
+            if (isClick && state.hoveredFeature) {
+                selectFeature(state.hoveredFeature);
+            } else {
+                updateInfoCard();
+            }
+        }
+
+        profileCanvas.addEventListener('pointerdown', e => { state.isDraggingProbe = true; handleProfilePointer(e, true); });
+        profileCanvas.addEventListener('pointermove', e => handleProfilePointer(e, false));
+        profileCanvas.addEventListener('pointerleave', () => { state.hoveredFeature = null; updateInfoCard(); });
+
+        globeCanvas.addEventListener('pointerdown', e => {
+            state.isDraggingProbe = true;
+            state.isDraggingGlobeRot = true;
+            state.dragStartX = e.clientX;
+            state.dragStartRot = state.globeRot;
+            handleGlobePointer(e, true);
+        });
+        globeCanvas.addEventListener('pointermove', e => handleGlobePointer(e, false));
+        globeCanvas.addEventListener('pointerleave', () => { state.hoveredFeature = null; updateInfoCard(); });
+
+        window.addEventListener('pointerup', () => {
+            state.isDraggingProbe = false;
+            state.isDraggingGlobeRot = false;
+        });
+
+        /***********************************************************************
+         * RESIZE & MAIN ANIMATION LOOP
+         ***********************************************************************/
+        function resizeCanvases() {
+            [globeCanvas, profileCanvas].forEach(c => {
+                const parent = c.parentElement;
+                const rect = parent.getBoundingClientRect();
+                c.width = Math.max(480, Math.floor(rect.width));
+                c.height = Math.max(360, Math.floor(rect.height));
+            });
+            drawGlobePanel();
+            drawProfilePanel();
+        }
+
+        window.addEventListener('resize', resizeCanvases);
+
+        let lastTime = performance.now();
+        function animate(now) {
+            const dt = Math.min(0.05, (now - lastTime) / 1000);
+            lastTime = now;
+
+            if (state.isPlaying) {
+                state.time += dt * state.speed;
+            }
+
+            // Smooth camera rotation transition even when flow is paused!
+            if (state.targetGlobeRot !== null) {
+                const diff = state.targetGlobeRot - state.globeRot;
+                if (Math.abs(diff) < 0.005) {
+                    state.globeRot = state.targetGlobeRot;
+                    state.targetGlobeRot = null;
+                } else {
+                    state.globeRot += diff * Math.min(1, dt * 8);
+                }
+                syncGlobeRotationUI();
+            }
+
+            drawGlobePanel();
+            drawProfilePanel();
+            requestAnimationFrame(animate);
+        }
+
+        window.onload = () => {
+            resizeCanvases();
+            updateControls();
+            updateInfoCard();
+            requestAnimationFrame(animate);
+        };
+    </script>
+</body>
+</html>
