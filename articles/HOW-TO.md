@@ -1,4 +1,4 @@
-# Adding writing and LinkedIn posts
+# Adding writing
 
 The site has no build step: edit these files, commit, and push. GitHub Actions republishes
 the site within a few minutes.
@@ -33,32 +33,3 @@ Add an entry with `url` instead of a Markdown file. `kind` is shown in place of 
 { "slug": "my-linkedin-article", "title": "…", "dek": "…", "date": "2026-11-20",
   "kind": "LinkedIn article", "tags": ["…"], "url": "https://www.linkedin.com/pulse/…" }
 ```
-
-## All your LinkedIn posts at once
-
-LinkedIn does not let other sites list your posts, but its data export does:
-
-1. On LinkedIn: **Me → Settings & Privacy → Data privacy → Get a copy of your data**.
-   Choose the larger archive, or tick **Posts**, and request it. LinkedIn emails a link
-   (usually within minutes for Posts, up to a day for the full archive).
-2. Download the .zip and run, from the project folder:
-
-   ```bash
-   .venv/bin/python import_linkedin.py ~/Downloads/Basic_LinkedInDataExport_….zip
-   ```
-
-   This rewrites `data/linkedin.json` with every public post, newest first. Rerun it with a
-   newer export whenever you want to catch up.
-
-## A single LinkedIn post in the feed
-
-On LinkedIn, open the post's menu (…), choose **Embed this post**, and copy the `urn:li:…`
-part of the embed link (or copy the post's link; the long number in it is the same ID).
-Add it to the top of `data/linkedin.json`:
-
-```json
-{ "urn": "urn:li:activity:7246265273039634433", "height": 720 }
-```
-
-`height` (pixels) is optional; posts with an image or a long text need more room (600 to 900).
-The post date is read from the ID. Only public posts can be embedded.
