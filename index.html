@@ -84,12 +84,6 @@ button{font:inherit;color:inherit}
 .dsinfo button{all:unset;cursor:pointer;color:var(--hero-accent);font-weight:500}
 .dsinfo button:hover,.dsinfo a:hover{text-decoration:underline}
 .dsinfo a{color:var(--hero-accent);text-decoration:none;font-weight:500}
-.evlist{display:flex;flex-direction:column;gap:4px;margin:-3px 0 0}
-.evlist button{display:flex;justify-content:space-between;align-items:baseline;gap:10px;text-align:left;border:1px solid var(--glass-line);background:rgba(255,255,255,.03);border-radius:8px;padding:7px 10px;cursor:pointer;color:var(--hero-muted);font-size:.84rem}
-.evlist button b{color:var(--hero-ink);font-weight:600}
-.evlist button span{font-size:.74rem;white-space:nowrap}
-.evlist button[aria-pressed="true"]{border-color:rgba(108,195,224,.55);background:rgba(108,195,224,.12)}
-.evlist .soon{font-size:.72rem;color:var(--hero-muted);margin:2px 0 0;opacity:.8}
 .row.between{justify-content:space-between;flex-wrap:nowrap}
 .row.between .switch{font-size:.8rem;white-space:nowrap}
 .row.between .navbtns{flex-wrap:nowrap;gap:5px}
@@ -1012,7 +1006,7 @@ async function setDataset(key){
   if (g.nlat!==NLAT||g.nlon!==NLON){ NLAT=g.nlat; NLON=g.nlon; NCELL=NLAT*NLON; FIELD=new Float32Array(NCELL); TMP=new Float32Array(NCELL); U=new Float32Array(NCELL); Vv=new Float32Array(NCELL); }
   GD=g.d; S.fieldKey=""; S.field2Key=""; S.flowKey=""; S.dfieldKey=""; DG=S.meta.detail?S.meta.detail.grid:null; PIX.key=""; parts=[]; tctx.clearRect(0,0,V.W,V.H);
   const t=S.meta.times, last=new Date(t[t.length-1]+"Z");
-  const ev=`<button type="button" data-ev="helene">Replay a past event ›</button>`;
+  const ev=`<button type="button" data-ev="${EVENTS[0].key}">Replay a past event ›</button>`;
   if (DS.mode==="recent") $("dsInfo").innerHTML=`NOAA GFS analyses every 6 hours, ${fmtDay(new Date(t[0]+"Z"))} to ${fmtDay(last)} ${t[t.length-1].slice(11,13)} UTC. Rain is a model estimate, not gauges or radar. ${ev}`;
   else if (DS.mode==="forecast"){
     const run=new Date(S.meta.run+"Z");
@@ -1092,12 +1086,19 @@ const EVENTS=[
 const FORECASTS=["aifs","gfs"];  // models offered in the Forecast tab; the first is the default
 
 (async function init(){
-  const open=(k,fly)=>setDataset(k).then(()=>{ if (fly) goSE(); }).catch(()=>{ $("dsInfo").hidden=false; $("dsInfo").textContent=`${DATASETS[k].label} data not found.`; });
+  // a dataset that fails to load sends the globe back to the past five days rather than leaving it blank
+  const open=(k,fly)=>setDataset(k).then(()=>{ if (fly) goSE(); }).catch(()=>{ if (k!=="recent") open("recent").then(()=>{ $("dsInfo").textContent=`${DATASETS[k].label} data is not available right now.`; }); });
+  // only offer forecast models whose data was published; their metadata is kept for the first switch
+  const fcReady=Promise.all(FORECASTS.map(k=>fetch(DATASETS[k].dir+"meta.json",{cache:"no-cache"}).then(r=>r.ok?r.json():null).catch(()=>null)))
+    .then(metas=>{ metas.forEach((m,i)=>{ if (m) S.metas[FORECASTS[i]]=m; }); return FORECASTS.filter((k,i)=>metas[i]); });
   for (const [k,label] of [["recent","Past 5 days"],["forecast","Forecast"]]){
     const b=document.createElement("button"); b.type="button"; b.textContent=label; b.dataset.k=k;
-    b.onclick=()=>open(k==="recent"?"recent":S.fcModel||FORECASTS[0]); $("datasets").appendChild(b);
+    b.onclick=()=>k==="recent"?open("recent"):fcReady.then(av=>{ if (av.length) open(av.includes(S.fcModel)?S.fcModel:av[0]); }); $("datasets").appendChild(b);
   }
-  $("fcModel").innerHTML=FORECASTS.map(k=>`<option value="${k}">${DATASETS[k].label}</option>`).join("");
+  fcReady.then(av=>{
+    $("fcModel").innerHTML=av.map(k=>`<option value="${k}">${DATASETS[k].label}</option>`).join("");
+    if (!av.length) document.querySelector('#datasets button[data-k="forecast"]').hidden=true;
+  });
   $("fcModel").onchange=e=>open(e.target.value);
   $("dsInfo").addEventListener("click",e=>{ const b=e.target.closest("[data-ev]"); if (b) open(b.dataset.ev, true); });
   $("flow").checked=S.flow;
