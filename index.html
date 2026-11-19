@@ -75,7 +75,15 @@ button{font:inherit;color:inherit}
 .seg.two{grid-template-columns:repeat(2,1fr)}
 .seg.four{grid-template-columns:repeat(4,1fr)}
 .dsinfo{margin:-3px 0 0;font-size:.74rem;color:var(--hero-muted);line-height:1.35}
-.dsinfo[hidden],.evlist[hidden]{display:none}
+.dsinfo[hidden],.fcrow[hidden]{display:none}
+.fcrow{display:flex;align-items:center;gap:8px;margin:-3px 0 0;font-size:.78rem;color:var(--hero-muted)}
+.fcrow select{flex:1;min-width:0;font:500 .84rem var(--sans);color:var(--hero-ink);background:rgba(255,255,255,.06);border:1px solid var(--glass-line);border-radius:7px;padding:5px 8px;cursor:pointer}
+.fcrow select:focus-visible{outline:2px solid var(--hero-accent)}
+.fcrow option{color:#13222d}
+.fcrow span{white-space:nowrap}
+.dsinfo button{all:unset;cursor:pointer;color:var(--hero-accent);font-weight:500}
+.dsinfo button:hover,.dsinfo a:hover{text-decoration:underline}
+.dsinfo a{color:var(--hero-accent);text-decoration:none;font-weight:500}
 .evlist{display:flex;flex-direction:column;gap:4px;margin:-3px 0 0}
 .evlist button{display:flex;justify-content:space-between;align-items:baseline;gap:10px;text-align:left;border:1px solid var(--glass-line);background:rgba(255,255,255,.03);border-radius:8px;padding:7px 10px;cursor:pointer;color:var(--hero-muted);font-size:.84rem}
 .evlist button b{color:var(--hero-ink);font-weight:600}
@@ -263,6 +271,7 @@ if (location.protocol === "file:") addEventListener("DOMContentLoaded", () => {
     <ul>
       <li><a href="#research">Research</a></li>
       <li><a href="#writing">Writing</a></li>
+      <li><a href="events.html">Events</a></li>
       <li><a href="#linkedin">LinkedIn</a></li>
       <li><a href="#publications">Publications</a></li>
       <li><a href="#projects">Tools</a></li>
@@ -287,7 +296,7 @@ if (location.protocol === "file:") addEventListener("DOMContentLoaded", () => {
 
     <div class="panel" role="group" aria-label="Globe controls">
       <div class="seg two" id="datasets" role="group" aria-label="Data shown"></div>
-      <div class="evlist" id="evList" role="group" aria-label="Past events" hidden></div>
+      <label class="fcrow" id="fcRow" hidden>Model <select id="fcModel" aria-label="Forecast model"></select><span id="fcRun"></span></label>
       <p class="dsinfo" id="dsInfo"></p>
       <div class="seg" id="layers" role="group" aria-label="Map layer"></div>
       <div class="row">
@@ -481,7 +490,7 @@ if (location.protocol === "file:") addEventListener("DOMContentLoaded", () => {
     </div>
   </section>
 
-  <footer class="wrap" id="footer">© 2026 Matt Hatami. Globe data: NOAA GFS analyses (public domain) and ERA5 reanalysis (Copernicus Climate Change Service). Coastlines and borders: Natural Earth via world-atlas and us-atlas.</footer>
+  <footer class="wrap" id="footer">© 2026 Matt Hatami. Globe data: NOAA GFS analyses and forecasts (public domain), ECMWF AIFS forecasts (ECMWF open data, CC BY 4.0) and ERA5 reanalysis (Copernicus Climate Change Service). Coastlines and borders: Natural Earth via world-atlas and us-atlas.</footer>
 </main>
 
 <script>
@@ -492,7 +501,7 @@ const DEG = 180/Math.PI, RAD = Math.PI/180;
 
 /* Two datasets share the globe: the past five days from GFS analyses (prepare_recent.py) and Helene in ERA5 (prepare_globe.py) */
 const DATASETS = {
-  recent: {label:"Past 5 days", dir:"data/recent/", flow:["ivtu","ivtv"], flowK:0.00035, flowMin:900,
+  recent: {mode:"recent", label:"Past 5 days", dir:"data/recent/", flow:["ivtu","ivtv"], flowK:0.00035, flowMin:900,
     flowLabel:"Flow lines (vapor transport)", defaultLayer:"ivt",
     lede:"The globe shows the last five days of the atmosphere behind extreme rain: where moisture is flowing, how much the air holds, and where it is raining.",
     layers:{
@@ -501,9 +510,27 @@ const DATASETS = {
       wind:{label:"Wind", name:"Wind speed at 850 hPa (about 1.5 km up)", unit:"m/s", cmap:"wind", range:[0,40], needs:["u850","v850"], vec:["u850","v850"]},
       rain:{label:"Rain", name:"Rain in the past 6 hours", unit:"mm", cmap:"rain", range:[0,50], needs:["rain6"], inches:true}
     }},
-  helene: {label:"Helene 2024", dir:"data/globe/", flow:["ivtu","ivtv"], flowK:0.00035, flowMin:900,
+  aifs: {mode:"forecast", label:"ECMWF AIFS (AI model)", dir:"data/forecast/aifs/", flow:["ivtu","ivtv"], flowK:0.00035, flowMin:900,
+    flowLabel:"Flow lines (vapor transport)", defaultLayer:"ivt", start:0,
+    lede:"The globe shows the next five days from ECMWF's machine-learning forecast model, AIFS: where moisture will flow and where rain is expected.",
+    layers:{
+      ivt: {label:"Vapor flow", name:"Integrated vapor transport", unit:"kg m⁻¹ s⁻¹", cmap:"ivt", range:[0,2000], needs:["ivtu","ivtv"], vec:["ivtu","ivtv"]},
+      pw:  {label:"Moisture", name:"Total column water", unit:"mm", cmap:"pw", range:[10,75], needs:["pw"]},
+      wind:{label:"Wind", name:"Wind speed at 850 hPa (about 1.5 km up)", unit:"m/s", cmap:"wind", range:[0,40], needs:["u850","v850"], vec:["u850","v850"]},
+      rain:{label:"Rain", name:"Rain in the previous 12 hours", unit:"mm", cmap:"rain", range:[0,75], needs:["rain12"], inches:true}
+    }},
+  gfs: {mode:"forecast", label:"NOAA GFS", dir:"data/forecast/gfs/", flow:["ivtu","ivtv"], flowK:0.00035, flowMin:900,
+    flowLabel:"Flow lines (vapor transport)", defaultLayer:"ivt", start:0,
+    lede:"The globe shows the next five days from NOAA's GFS forecast model: where moisture will flow and where rain is expected.",
+    layers:{
+      ivt: {label:"Vapor flow", name:"Integrated vapor transport", unit:"kg m⁻¹ s⁻¹", cmap:"ivt", range:[0,2000], needs:["ivtu","ivtv"], vec:["ivtu","ivtv"]},
+      pw:  {label:"Moisture", name:"Precipitable water", unit:"mm", cmap:"pw", range:[10,75], needs:["pw"]},
+      wind:{label:"Wind", name:"Wind speed at 850 hPa (about 1.5 km up)", unit:"m/s", cmap:"wind", range:[0,40], needs:["u850","v850"], vec:["u850","v850"]},
+      rain:{label:"Rain", name:"Rain in the previous 12 hours", unit:"mm", cmap:"rain", range:[0,75], needs:["rain12"], inches:true}
+    }},
+  helene: {mode:"event", label:"Hurricane Helene, 2024", dir:"data/globe/", flow:["ivtu","ivtv"], flowK:0.00035, flowMin:900,
     flowLabel:"Flow lines (vapor transport)", defaultLayer:"ivt", start:"2024-09-27T00:00",
-    lede:"Switch back to the forecast any time; this view replays the week of Hurricane Helene, September 2024, in ERA5.",
+    lede:"This view replays the week of Hurricane Helene, September 2024, in ERA5. Switch back to the past five days or the forecast any time.",
     layers:{
       ivt: {label:"Vapor flow", name:"Integrated vapor transport", unit:"kg m⁻¹ s⁻¹", cmap:"ivt", range:[0,2000], needs:["ivtu","ivtv"], vec:["ivtu","ivtv"]},
       pw:  {label:"Moisture", name:"Precipitable water", unit:"mm", cmap:"pw", range:[10,75], needs:["pw"]},
@@ -845,7 +872,8 @@ function stepFlow(){
 /* ---------- controls ---------- */
 const fmtDay=d=>d.toLocaleString("en-US",{timeZone:"UTC",weekday:"short",day:"numeric",month:"short"});
 const fmtTime=i=>{ const d=new Date(S.meta.times[i]+"Z"), hh=String(d.getUTCHours()).padStart(2,"0");
-  return `${fmtDay(d)} <span>· ${hh}:00 UTC</span>`; };
+  const lead=DS.mode==="forecast"&&S.meta.leads?` (+${S.meta.leads[i]} h)`:"";
+  return `${fmtDay(d)} <span>· ${hh}:00 UTC${lead}</span>`; };
 function setTime(t, fromSlider){
   S.t=Math.max(0,Math.min(NT()-1,t)); if (!fromSlider) $("time").value=S.t;
   $("when").innerHTML=fmtTime(Math.round(S.t)); S.dirty=true; S.hoverDirty=true;
@@ -967,7 +995,8 @@ function frame(ts){
 /* ---------- start ---------- */
 async function setDataset(key){
   pause(); S.ds=key; DS=DATASETS[key]; LAYERS=DS.layers; S.layer=DS.defaultLayer;
-  document.querySelectorAll("#datasets button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===(key==="recent"?"recent":"events"))));
+  document.querySelectorAll("#datasets button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===DS.mode)));
+  $("fcRow").hidden=DS.mode!=="forecast"; if (DS.mode==="forecast"){ S.fcModel=key; $("fcModel").value=key; }
   $("flowLabel").textContent=DS.flowLabel; $("ledeData").textContent=DS.lede;
   if (!S.metas[key]){ const r=await fetch(DS.dir+"meta.json",{cache:"no-cache"}); if (!r.ok) throw new Error(key); S.metas[key]=await r.json(); }
   if (S.ds!==key) return;  // another switch happened while loading
@@ -976,8 +1005,6 @@ async function setDataset(key){
   LAYERS=Object.fromEntries(Object.entries(DS.layers).filter(([,L])=>L.needs.every(n=>S.meta.layers[n])));
   if (!LAYERS[S.layer]) S.layer=Object.keys(LAYERS)[0];
   $("layers").innerHTML=""; $("layers").className="seg"+(Object.keys(LAYERS).length===4?" four":"");
-  $("evList").hidden=key==="recent"; $("dsInfo").hidden=key!=="recent";
-  $("evList").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===key)));
   for (const [k,L] of Object.entries(LAYERS)){
     const b=document.createElement("button"); b.type="button"; b.textContent=L.label; b.title=L.name; b.dataset.k=k; b.onclick=()=>setLayer(k); $("layers").appendChild(b);
   }
@@ -985,11 +1012,17 @@ async function setDataset(key){
   if (g.nlat!==NLAT||g.nlon!==NLON){ NLAT=g.nlat; NLON=g.nlon; NCELL=NLAT*NLON; FIELD=new Float32Array(NCELL); TMP=new Float32Array(NCELL); U=new Float32Array(NCELL); Vv=new Float32Array(NCELL); }
   GD=g.d; S.fieldKey=""; S.field2Key=""; S.flowKey=""; S.dfieldKey=""; DG=S.meta.detail?S.meta.detail.grid:null; PIX.key=""; parts=[]; tctx.clearRect(0,0,V.W,V.H);
   const t=S.meta.times, last=new Date(t[t.length-1]+"Z");
-  $("dsInfo").textContent=key==="recent"
-    ? `NOAA GFS analyses every 6 hours, ${fmtDay(new Date(t[0]+"Z"))} to ${fmtDay(last)} ${t[t.length-1].slice(11,13)} UTC. Rain is the model's estimate for each 6 hours, not a gauge or radar measurement.`
-    : "ERA5 reanalysis, every 6 hours, 23–29 September 2024.";
+  const ev=`<button type="button" data-ev="helene">Replay a past event ›</button>`;
+  if (DS.mode==="recent") $("dsInfo").innerHTML=`NOAA GFS analyses every 6 hours, ${fmtDay(new Date(t[0]+"Z"))} to ${fmtDay(last)} ${t[t.length-1].slice(11,13)} UTC. Rain is a model estimate, not gauges or radar. ${ev}`;
+  else if (DS.mode==="forecast"){
+    const run=new Date(S.meta.run+"Z");
+    $("fcRun").textContent=`run ${fmtDay(run)} ${S.meta.run.slice(11,13)} UTC`;
+    $("dsInfo").innerHTML=`Every 12 hours out to 5 days. Rain is the total in the 12 hours up to each time. ${ev}`;
+  } else $("dsInfo").innerHTML=`ERA5 reanalysis, every 6 hours, 23–29 September 2024. <a href="events.html">All past events ›</a>`;
+  $("dsInfo").hidden=false;
   $("time").max=NT()-1;
-  const start=DS.start?S.meta.times.indexOf(DS.start):NT()-1; setTime(start>=0?start:0);  // the recent data opens on its newest time
+  // past days open on the newest time, forecasts on the first lead, events on their own start time
+  const start=typeof DS.start==="string"?S.meta.times.indexOf(DS.start):DS.start===0?0:NT()-1; setTime(start>=0?start:0);
   await setLayer(S.layer);
   await Promise.all(S.flow?DS.flow.map(n=>loadLayer(n)):[]).catch(()=>{});
   S.dirty=true;
@@ -1056,16 +1089,17 @@ const goSE=()=>flyTo(SE.lam,SE.phi,fitSE());
 const EVENTS=[
   {key:"helene", name:"Hurricane Helene", when:"23–29 Sep 2024"}
 ];
+const FORECASTS=["aifs","gfs"];  // models offered in the Forecast tab; the first is the default
 
 (async function init(){
   const open=(k,fly)=>setDataset(k).then(()=>{ if (fly) goSE(); }).catch(()=>{ $("dsInfo").hidden=false; $("dsInfo").textContent=`${DATASETS[k].label} data not found.`; });
-  for (const [k,label] of [["recent","Past 5 days"],["events","Past events"]]){
+  for (const [k,label] of [["recent","Past 5 days"],["forecast","Forecast"]]){
     const b=document.createElement("button"); b.type="button"; b.textContent=label; b.dataset.k=k;
-    b.onclick=()=>k==="recent"?open("recent"):open(S.ds!=="recent"?S.ds:EVENTS[0].key, true); $("datasets").appendChild(b);
+    b.onclick=()=>open(k==="recent"?"recent":S.fcModel||FORECASTS[0]); $("datasets").appendChild(b);
   }
-  $("evList").innerHTML=EVENTS.map(e=>`<button type="button" data-k="${e.key}"><b>${e.name}</b><span>${e.when}</span></button>`).join("")
-    +`<p class="soon">More events are on the way.</p>`;
-  $("evList").querySelectorAll("button").forEach(b=>b.onclick=()=>open(b.dataset.k, true));
+  $("fcModel").innerHTML=FORECASTS.map(k=>`<option value="${k}">${DATASETS[k].label}</option>`).join("");
+  $("fcModel").onchange=e=>open(e.target.value);
+  $("dsInfo").addEventListener("click",e=>{ const b=e.target.closest("[data-ev]"); if (b) open(b.dataset.ev, true); });
   $("flow").checked=S.flow;
   $("flow").onchange=e=>{ S.flow=e.target.checked; if (S.flow && S.meta) Promise.all(DS.flow.map(n=>loadLayer(n))).catch(()=>{}); };
   $("play").onclick=()=>S.playing?pause():play();
@@ -1086,7 +1120,9 @@ const EVENTS=[
     S.dirty=true;
   } catch(e){}
 
-  // open on the past five days; fall back to Helene if data/recent has not been built
+  // open on the past five days (or the event in #event=<key>); fall back to Helene if data/recent has not been built
+  const evHash=(location.hash.match(/^#event=(\w+)/)||[])[1];
+  if (evHash && DATASETS[evHash]?.mode==="event"){ try { await setDataset(evHash); $("status").remove(); goSE(); return; } catch(e){} }
   try { await setDataset("recent"); $("status").remove(); }
   catch(e){
     try { await setDataset("helene"); $("status").remove(); }

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Past Events · Matt Hatami</title>
+<meta name="description" content="Extreme rain events replayed on the globe and studied in depth: the winds, moisture and rain behind each one.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F8F9; --panel:#FFFFFF; --ink:#14181B; --muted:#5A6670; --line:#D5DBDF; --accent:#1B6A88; --mark:#AE2F66;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){ --paper:#0E1A23; --panel:#13222D; --ink:#E1E8EC; --muted:#93A4AE; --line:#263A4A; --accent:#5FB6D4; --mark:#E46A9F; color-scheme:dark; }
+}
+:root[data-theme="dark"]{ --paper:#0E1A23; --panel:#13222D; --ink:#E1E8EC; --muted:#93A4AE; --line:#263A4A; --accent:#5FB6D4; --mark:#E46A9F; color-scheme:dark; }
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;font-size:.92rem}
+.top a{text-decoration:none;color:var(--muted)}
+.top a:hover{color:var(--ink)}
+.top .brand{font:600 1.1rem var(--serif);color:var(--ink)}
+.head{border-bottom:3px solid var(--ink);padding:28px 0 22px;margin-bottom:34px}
+.head h1{font:700 clamp(2.6rem,6vw,4.2rem)/1 var(--serif);letter-spacing:-.025em;margin:0 0 14px}
+.head p{font:400 1.15rem/1.55 var(--serif);color:var(--muted);margin:0;max-width:44rem}
+.event{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:32px;align-items:center;padding-bottom:36px;border-bottom:1px solid var(--line)}
+.event img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:4px;background:var(--line)}
+.meta{font:600 .74rem/1.3 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--mark);margin:0 0 10px}
+.event h2{font:700 clamp(1.8rem,3.4vw,2.5rem)/1.1 var(--serif);letter-spacing:-.015em;margin:0 0 12px}
+.event p.dek{font:400 1.08rem/1.6 var(--serif);color:var(--muted);margin:0 0 20px}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.links a{padding:9px 15px;border-radius:999px;border:1px solid var(--line);text-decoration:none;font-weight:600;font-size:.92rem}
+.links a.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.links a:hover{border-color:var(--accent)}
+.soon{color:var(--muted);margin:30px 0 0}
+footer{margin:72px 0 0;padding:22px 0 44px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted)}
+@media (max-width:820px){ .event{grid-template-columns:minmax(0,1fr);gap:18px} }
+@media (max-width:760px){ .wrap{padding:0 16px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top" aria-label="Site">
+    <a class="brand" href="index.html">Matt Hatami</a>
+    <a href="index.html">← Home</a>
+  </nav>
+  <header class="head">
+    <h1>Past events.</h1>
+    <p>Extreme rain events, replayed on the globe and studied in depth: the winds, moisture and rain behind each one, and what could have been seen coming.</p>
+  </header>
+  <main>
+    <article class="event">
+      <a href="index.html#event=helene"><img src="assets/articles/helene-replay.jpg" alt="Hurricane Helene's vapor transport over the Gulf of Mexico"></a>
+      <div>
+        <p class="meta">23–29 September 2024 · Southeastern United States</p>
+        <h2>Hurricane Helene</h2>
+        <p class="dek">Helene made landfall in Florida's Big Bend as a major hurricane and drove catastrophic inland flooding in the southern Appalachians. ERA5 puts 369 mm (14.5 in) of rain at Asheville, North Carolina, most of it in two days.</p>
+        <p class="links">
+          <a class="primary" href="index.html#event=helene">Replay on the globe</a>
+          <a href="helene_viewer.html">Hour-by-hour viewer</a>
+          <a href="before_helene.html">Before Helene</a>
+        </p>
+      </div>
+    </article>
+    <p class="soon">More events are on the way.</p>
+  </main>
+  <footer>© 2026 Matt Hatami · Event data: ERA5 reanalysis (Copernicus Climate Change Service)</footer>
+</div>
+</body>
+</html>

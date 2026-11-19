@@ -1,4 +1,4 @@
-# Refreshes the globe's past five days from the newest GFS analysis and publishes the site to
+# Refreshes the globe's past five days (GFS analyses) and forecasts (GFS, ECMWF AIFS) and publishes the site to
 # GitHub Pages. GFS files for a cycle are complete about 4 hours after it (00, 06, 12, 18 UTC).
 name: Update globe data
 
@@ -21,7 +21,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
 
@@ -32,10 +32,13 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      # decoded GFS times from earlier runs, so each run downloads only the newest one
+      # decoded GFS times from earlier runs, so each run downloads only the newest one, and the
+      # built forecasts, so a model is downloaded again only when its new run is out
       - uses: actions/cache@v4
         with:
-          path: .cache/recent
+          path: |
+            .cache/recent
+            data/forecast
           key: gfs-recent-${{ github.run_id }}
           restore-keys: gfs-recent-
 
